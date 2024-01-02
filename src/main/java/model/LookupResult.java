@@ -15,5 +15,4 @@ public class LookupResult {
     private String description;
     private String available;
     private String priceString;
-
 }
