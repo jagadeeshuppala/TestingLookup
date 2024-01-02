@@ -1,8 +1,6 @@
 package service;
 
-import lombok.SneakyThrows;
 import model.LookupResult;
-import model.LookupResultOptions;
 import model.Product;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.poi.ss.usermodel.CellType;
@@ -17,7 +15,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,10 +23,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
+public class Trident implements Callable<Map<Integer, LookupResult>> {
 
     String fileName;
-    Map<Integer, LookupResultOptions> concurrentHashMap = new ConcurrentHashMap<>();
+    Map<Integer, LookupResult> concurrentHashMap = new ConcurrentHashMap<>();
 
     public Trident(String fileName){
         this.fileName = fileName;
@@ -42,7 +39,7 @@ public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
 
 
     @Override
-    public Map<Integer, LookupResultOptions> call() throws Exception {
+    public Map<Integer, LookupResult> call() throws Exception {
 
 
         WebDriverManager.chromedriver().setup();
@@ -138,7 +135,7 @@ public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
 
                 System.out.println("--------------------------------------------------------");
             }catch (Exception e){
-                System.out.println("Trident exception:::"+e.getMessage());
+                System.out.println("Trident exception during the search field ::::::"+ product.getProductName() +":" +product.getStrength()+ ":" +e.getMessage());
                 e.printStackTrace();
                 Thread.sleep(1000);
             }
@@ -1043,19 +1040,26 @@ public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
                 strengthToBeGivenInSearchField = matcher.group(1);
             }
         }
+        try{
+            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).clear();
+            if(strength!=null && !strength.equals("")){
+                driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField + " "+ strengthToBeGivenInSearchField);
+            }else{
+                driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField );
+            }
 
-
-        driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).clear();
-        if(strength!=null && !strength.equals("")){
-            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField + " "+ strengthToBeGivenInSearchField);
-        }else{
-            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField );
+        }catch (Exception e){
+            System.out.println("Trident exception during the search field ::::::"+ productName +":" +strength+ ":" +e.getMessage());
+            e.printStackTrace();
+            Thread.sleep(1000);
         }
+
+
 
         //Thread.sleep(3000);
         driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]"))
                 .sendKeys( Keys.RETURN);
-        Thread.sleep(5000);
+        Thread.sleep(4000);
 
         List<LookupResult> lookupResultList = Collections.synchronizedList(new ArrayList<>());
 
@@ -1070,7 +1074,7 @@ public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
                 lookupResultList.add(LookupResult.builder().description(descriptionFromWebsite.toLowerCase()).priceString(priceFromWebsite.toLowerCase()).available(availabilityFromWebsite).build());
 
             }catch (Exception e){
-                System.out.println("Trident exception is::::::"+e.getMessage());
+                System.out.println("Trident exception is::::::"+ productName +":" +strength+ ":" +e.getMessage());
                 e.printStackTrace();
                 Thread.sleep(1000);
             }

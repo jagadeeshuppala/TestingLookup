@@ -1,8 +1,6 @@
 package service;
 
-import lombok.SneakyThrows;
 import model.LookupResult;
-import model.LookupResultOptions;
 import model.Product;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.poi.ss.usermodel.CellType;
@@ -17,8 +15,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,10 +23,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class Sig implements Callable<Map<Integer, LookupResultOptions>> {
+public class Sig implements Callable<Map<Integer, LookupResult>> {
 
     String fileName;
-    Map<Integer, LookupResultOptions> concurrentHashMap = new ConcurrentHashMap<>();
+    Map<Integer, LookupResult> concurrentHashMap = new ConcurrentHashMap<>();
 
     public Sig(String fileName){
         this.fileName = fileName;
@@ -43,7 +39,7 @@ public class Sig implements Callable<Map<Integer, LookupResultOptions>> {
 
 
     @Override
-    public Map<Integer, LookupResultOptions> call() throws Exception {
+    public Map<Integer, LookupResult> call() throws Exception {
 
 
         WebDriverManager.chromedriver().setup();;
@@ -131,6 +127,7 @@ public class Sig implements Callable<Map<Integer, LookupResultOptions>> {
 
                 System.out.println("--------------------------------------------------------");
             }catch (Exception e){
+                System.out.println("Sigma exception:::"+product.getProductName() + ":" + product.getStrength() + ":" + e.getMessage());
                 e.printStackTrace();
             }
 
@@ -1779,7 +1776,7 @@ public class Sig implements Callable<Map<Integer, LookupResultOptions>> {
                     lookupResultList.add(LookupResult.builder().description(wholeDescription.toLowerCase()).priceString(priceFromWebsite.toLowerCase()).available(stockAvailability(stockAvailabilityClassAttribute).toLowerCase()).build());
 
                 }catch (Exception e){
-                    System.out.println("exception is::::::"+e.getMessage());
+                    System.out.println("Sigma exception is::::::"+productName+":"+strength+":"+e.getMessage());
                     e.printStackTrace();
                     Thread.sleep(5000);
                 }

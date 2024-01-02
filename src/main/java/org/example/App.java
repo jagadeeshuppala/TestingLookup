@@ -1,7 +1,6 @@
 package org.example;
 
 import model.LookupResult;
-import model.LookupResultOptions;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
@@ -13,6 +12,7 @@ import service.Sig;
 import service.Trident;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -27,18 +27,21 @@ public class App
 
 
         long startTime = System.currentTimeMillis();
-        int bnsResultsColNumber = 4;
-        int bnsProductNameColNumber = 5;
-        int sigmaResultsColNumber = 6;
-        int sigmaProductNameColNumber = 7;
-        int tridentResultsColNumber = 8;
-        int tridentProductNameColNumber = 9;
-        int aahResultsColNumber = 10;
-        int aahProductNameColNumber = 11;
+        int bnsResultsColNumber = 30;
+        int bnsProductNameColNumber = 34;
+        int sigmaResultsColNumber = 31;
+        int sigmaProductNameColNumber = 35;
+        int tridentResultsColNumber = 32;
+        int tridentProductNameColNumber = 36;
+        int aahResultsColNumber = 33;
+        int aahProductNameColNumber = 37;
 
 
-        String originalFileName = "/Users/juppala/Downloads/TestingLookup/src/main/resources/myownspreadsheet.xlsx";
-        String copiedFileName = "/Users/juppala/Downloads/TestingLookup/src/main/resources/myownspreadsheetCopy.xlsx";
+        //String originalFileName = "/Users/juppala/Downloads/TestingLookup/src/main/resources/myownspreadsheet.xlsx";
+        String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\myownspreadsheet.xlsx";
+        //String copiedFileName = "/Users/juppala/Downloads/TestingLookup/src/main/resources/myownspreadsheetCopy.xlsx";
+        String date = LocalDateTime.now().getDayOfMonth()+"_"+LocalDateTime.now().getMonthValue()+"_"+LocalDateTime.now().getYear();
+        String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\myownspreadsheet_copy_"+ date +".xlsx";
 
         File original = new File(originalFileName);
         File copied = new File(copiedFileName);
@@ -65,15 +68,11 @@ public class App
         bnsThread.join();
         sigmaThread.join();
 */
-        ExecutorService executor = Executors.newFixedThreadPool(5);
-        Callable bnsWorker = new BnS(copiedFileName);
-        Callable sigmaWorker = new Sig(copiedFileName);
-        Callable tridentWorker = new Trident(copiedFileName);
-        Callable aahWorker = new Aah(copiedFileName);
-        Future<Map<Integer, LookupResultOptions>> bnsFuture = executor.submit(bnsWorker);
-        Future<Map<Integer, LookupResultOptions>> sigmaFuture = executor.submit(sigmaWorker);
-        Future<Map<Integer, LookupResultOptions>> tridentFuture = executor.submit(tridentWorker);
-        Future<Map<Integer, LookupResultOptions>> aahFuture = executor.submit(aahWorker);
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        Future<Map<Integer, LookupResult>> bnsFuture = executor.submit(new BnS(copiedFileName));
+        Future<Map<Integer, LookupResult>> sigmaFuture = executor.submit(new Sig(copiedFileName));
+        Future<Map<Integer, LookupResult>> tridentFuture = executor.submit(new Trident(copiedFileName));
+        Future<Map<Integer, LookupResult>> aahFuture = executor.submit(new Aah(copiedFileName));
 
 
 
@@ -82,18 +81,11 @@ public class App
         }
         System.out.println("Finished all threads");
 
-        /*System.out.println("BNS Results"+bnsFuture.get());
-        System.out.println("Sigma Results"+sigmaFuture.get())*/;
 
-        /*Map<Integer, LookupResult> bnsResults = bns.getConcurrentHashMap();
-        Map<Integer, LookupResult> sigmaResults = sigma.getConcurrentHashMap();
-        Map<Integer, LookupResult> tridentResults = trident.getConcurrentHashMap();
-        Map<Integer, LookupResult> aahResults = aah.getConcurrentHashMap();*/
-
-        Map<Integer, LookupResultOptions> bnsResults = bnsFuture.get();
-        Map<Integer, LookupResultOptions> sigmaResults = sigmaFuture.get();
-        Map<Integer, LookupResultOptions> tridentResults = tridentFuture.get();
-        Map<Integer, LookupResultOptions> aahResults = aahFuture.get();
+        Map<Integer, LookupResult> bnsResults = bnsFuture.get();
+        Map<Integer, LookupResult> sigmaResults = sigmaFuture.get();
+        Map<Integer, LookupResult> tridentResults = tridentFuture.get();
+        Map<Integer, LookupResult> aahResults = aahFuture.get();
 
 
 
@@ -120,16 +112,16 @@ public class App
         orangeCellStyle.setFont(orangeFontWithBold);
 
         for (Integer rowNumber : aahResults.keySet()) {
-            LookupResultOptions bnsLookupResult = bnsResults.get(rowNumber);
-            LookupResultOptions sigmaLookupResult = sigmaResults.get(rowNumber);
-            LookupResultOptions tridentLookupResult = tridentResults.get(rowNumber);
-            LookupResultOptions aahLookupResult = aahResults.get(rowNumber);
+            LookupResult bnsLookupResult = bnsResults.get(rowNumber);
+            LookupResult sigmaLookupResult = sigmaResults.get(rowNumber);
+            LookupResult tridentLookupResult = tridentResults.get(rowNumber);
+            LookupResult aahLookupResult = aahResults.get(rowNumber);
 
             Row row = sheet.getRow(rowNumber);
-            populatePriceAndDesc(bnsLookupResult, bnsResultsColNumber, bnsProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, bnsLookupResult, row);
-            populatePriceAndDesc(sigmaLookupResult, sigmaResultsColNumber, sigmaProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, bnsLookupResult, row);
-            populatePriceAndDesc(tridentLookupResult, tridentResultsColNumber, tridentProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, bnsLookupResult, row);
-            populatePriceAndDesc(aahLookupResult, aahResultsColNumber, aahProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, bnsLookupResult, row);
+            populatePriceAndDesc(bnsLookupResult, bnsResultsColNumber, bnsProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, row);
+            populatePriceAndDesc(sigmaLookupResult, sigmaResultsColNumber, sigmaProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, row);
+            populatePriceAndDesc(tridentLookupResult, tridentResultsColNumber, tridentProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, row);
+            populatePriceAndDesc(aahLookupResult, aahResultsColNumber, aahProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, row);
 
 
             /*Row row = sheet.getRow(rowNumber);
@@ -215,35 +207,30 @@ public class App
 
     }
 
-    private static void populatePriceAndDesc(LookupResultOptions lookupResultOptions, int resultsColumnNumber, int productNameColumnNumber, Font redFontWithBold, Font greenFontWithBold, Font orangeFontWithBold, LookupResultOptions bnsLookupResult, Row row) {
+
+
+    private static void populatePriceAndDesc(LookupResult lookupResult, int resultsColumnNumber, int productNameColumnNumber, Font redFontWithBold, Font greenFontWithBold, Font orangeFontWithBold, Row row) {
         Cell priceCell = row.createCell(resultsColumnNumber);
         Cell productNameCell = row.createCell(productNameColumnNumber);
-        LookupResult cheapestAvailableOption = lookupResultOptions.getChepestAvailableOption();
-        LookupResult cheapestOption = lookupResultOptions.getChepestOption();
-        if(cheapestOption.getPriceString().equals("-1")  ){
-            XSSFRichTextString priceString = new XSSFRichTextString("NS");
-            priceString.applyFont(0, "NS".length(), orangeFontWithBold);
-            priceCell.setCellValue(priceString );
-            productNameCell.setCellValue(cheapestOption.getDescription());
-        }else if(cheapestAvailableOption.getPriceString().equals(cheapestOption.getPriceString() ) ){
-            // Cheapest option is available
-            XSSFRichTextString priceString = new XSSFRichTextString(cheapestAvailableOption.getPriceString());
-            priceString.applyFont(0, cheapestAvailableOption.getPriceString().length(), greenFontWithBold);
-            priceCell.setCellValue(priceString );
-            productNameCell.setCellValue(cheapestAvailableOption.getDescription());
-        }else if(cheapestAvailableOption.getPriceString().equals("-1")){
-            // there is no cheapest available
-            XSSFRichTextString priceString = new XSSFRichTextString(cheapestOption.getPriceString());
-            priceString.applyFont(0, cheapestOption.getPriceString().length(), redFontWithBold);
-            priceCell.setCellValue(priceString );
-            productNameCell.setCellValue(cheapestOption.getDescription());
-        }else{
-            // there is a mixture of available and cheapest options
-            XSSFRichTextString priceString  = new XSSFRichTextString(cheapestOption.getPriceString()+""+cheapestAvailableOption.getPriceString() );
-            priceString.applyFont(0, cheapestOption.getPriceString().length(), redFontWithBold);
-            priceString.applyFont(cheapestOption.getPriceString().length(), (cheapestOption.getPriceString()+""+cheapestAvailableOption.getPriceString()).length(), greenFontWithBold);
-            priceCell.setCellValue(priceString);
-            productNameCell.setCellValue(cheapestOption.getDescription()+"\r\n"+cheapestAvailableOption.getDescription());
+        if(lookupResult!=null){
+            if(lookupResult.getPriceString().equals("-1")){
+                XSSFRichTextString priceString = new XSSFRichTextString("NS");
+                priceString.applyFont(0, "NS".length(), orangeFontWithBold);
+                priceCell.setCellValue(priceString );
+                productNameCell.setCellValue(lookupResult.getDescription());
+            }else if(lookupResult.getAvailable().equals("available") || lookupResult.getAvailable().equals("low stock")  || lookupResult.getAvailable().equals("In stock")){
+                XSSFRichTextString priceString = new XSSFRichTextString(lookupResult.getPriceString());
+                priceString.applyFont(0, lookupResult.getPriceString().length(), greenFontWithBold);
+                priceCell.setCellValue(priceString );
+                productNameCell.setCellValue(lookupResult.getDescription());
+            }else{
+                // its not available
+                XSSFRichTextString priceString = new XSSFRichTextString(lookupResult.getPriceString());
+                priceString.applyFont(0, lookupResult.getPriceString().length(), redFontWithBold);
+                priceCell.setCellValue(priceString );
+                productNameCell.setCellValue(lookupResult.getDescription());
+            }
         }
+
     }
 }

@@ -1,8 +1,6 @@
 package service;
 
-import lombok.SneakyThrows;
 import model.LookupResult;
-import model.LookupResultOptions;
 import model.Product;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.poi.ss.usermodel.CellType;
@@ -17,7 +15,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,10 +23,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class BnS implements Callable<Map<Integer, LookupResultOptions>> {
+public class BnS implements Callable<Map<Integer, LookupResult>> {
 
     private String fileName;
-    Map<Integer, LookupResultOptions> concurrentHashMap = new ConcurrentHashMap<>();
+    Map<Integer, LookupResult> concurrentHashMap = new ConcurrentHashMap<>();
 
     public BnS(String fileName){
         this.fileName = fileName;
@@ -45,7 +42,7 @@ public class BnS implements Callable<Map<Integer, LookupResultOptions>> {
 
 
     @Override
-    public Map<Integer, LookupResultOptions> call() throws Exception {
+    public Map<Integer, LookupResult> call() throws Exception {
         WebDriverManager.chromedriver().setup();
         WebDriver driver = new ChromeDriver();
         driver.get("https://www.bnsgroup.co.uk/login.do");

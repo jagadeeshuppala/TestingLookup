@@ -1,9 +1,7 @@
 package service;
 
 import model.LookupResult;
-import model.LookupResultOptions;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -320,26 +318,16 @@ public class Util {
         return strengthWithUnits;
     }
 
-    public static LookupResultOptions getCheapestOption(List<LookupResult> lookupResults){
-        if(lookupResults.isEmpty()){
-            LookupResult cheapestOption = LookupResult.builder().priceString("-1").description("NA").available("NA").build();
-            LookupResult cheapestAvailableOption = LookupResult.builder().priceString("-1").description("NA").available("NA").build();
-            return LookupResultOptions.builder().chepestOption(cheapestOption).chepestAvailableOption(cheapestAvailableOption).build();
+    public static LookupResult getCheapestOption(List<LookupResult> lookupResults){
+        if(lookupResults==null){
+            return LookupResult.builder().priceString("-1").description("NA").available("NA").build();
         }
         LookupResult cheapestOption =  lookupResults.stream()
                 .min(Comparator.comparingDouble(
                         result -> Double.parseDouble(result.getPriceString().replaceAll("£","")))
                 ).orElse(LookupResult.builder().priceString("-1").description("NA").available("NA").build());
 
-        LookupResult cheapestAvailbleOption =  lookupResults.stream()
-                .filter( availableOption -> (availableOption.getAvailable().equals("available")
-                        || availableOption.getAvailable().equals("low stock")
-                        || availableOption.getAvailable().equals("In stock") ))
-                .min(Comparator.comparingDouble(
-                        result -> Double.parseDouble(result.getPriceString().replaceAll("£","")))
-                ).orElse(LookupResult.builder().priceString("-1").description("NA").available("NA").build());
-
-        return LookupResultOptions.builder().chepestOption(cheapestOption).chepestAvailableOption(cheapestAvailbleOption).build();
+       return cheapestOption;
     }
 }
 
