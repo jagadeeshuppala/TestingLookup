@@ -1249,7 +1249,7 @@ public class Aah implements Callable<Map<Integer, LookupResult>>{
         //Thread.sleep(3000);
         driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]"))
                 .sendKeys( Keys.RETURN);
-        Thread.sleep(4000);
+        Thread.sleep(5000);
 
         List<LookupResult> lookupResultList = Collections.synchronizedList(new ArrayList<>());
 
