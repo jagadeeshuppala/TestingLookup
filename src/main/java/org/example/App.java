@@ -38,10 +38,10 @@ public class App
 
 
         //String originalFileName = "/Users/juppala/Downloads/TestingLookup/src/main/resources/myownspreadsheet.xlsx";
-        String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\myownspreadsheet.xlsx";
+        String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\newSpreadSheet.xlsx";
         //String copiedFileName = "/Users/juppala/Downloads/TestingLookup/src/main/resources/myownspreadsheetCopy.xlsx";
         String date = LocalDateTime.now().getDayOfMonth()+"_"+LocalDateTime.now().getMonthValue()+"_"+LocalDateTime.now().getYear();
-        String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\myownspreadsheet_copy_"+ date +".xlsx";
+        String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\newSpreadSheet_copy_"+ date +".xlsx";
 
         File original = new File(originalFileName);
         File copied = new File(copiedFileName);

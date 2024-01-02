@@ -845,6 +845,9 @@ public class Sig implements Callable<Map<Integer, LookupResult>> {
         }else if(product.getProductName().contains("celluvisc eye drops") && product.getStrength().equals("0.50%")){
             product.setProductName("celluvisc eye");
             product.setStrength("0.5%");
+        }else if(product.getProductName().contains("latanoprost eye drops") && product.getStrength().equals("50mcg")){
+            product.setProductName("latanoprost eye drops");
+            product.setStrength("");
         }
 
 

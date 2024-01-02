@@ -194,7 +194,7 @@ public class Util {
                 }else if(word.equals("application")){
                     foundMatch = websiteDescription.contains("app") ;
                 }else if(word.equals("ferrous")){
-                    foundMatch = websiteDescription.contains("ferrous") ;
+                    foundMatch = websiteDescription.contains("ferrous") || websiteDescription.contains("ferr") ;
                 }else if(word.equals("fumarate")){
                     foundMatch = websiteDescription.contains("fuma") ;
                 }else if(word.equals("evohaler")){
@@ -216,7 +216,8 @@ public class Util {
                 }else if(word.equals("oxybutinin")){
                     foundMatch = websiteDescription.contains("oxybutynin") ;
                 }else if(word.equals("sulphate")){
-                    foundMatch = (websiteDescription.contains("sulp") || websiteDescription.contains("sulfate")) && !websiteDescription.contains("bisu");
+                    foundMatch = (websiteDescription.contains("sulp") || websiteDescription.contains("sulfate")
+                    ||  websiteDescription.contains("sulf")) && !websiteDescription.contains("bisu");
                 }else if(word.equals("bicarbonate")){
                     foundMatch = websiteDescription.contains("bica") ;
                 }else if(word.equals("turbohaler")){
@@ -324,7 +325,7 @@ public class Util {
         }
         LookupResult cheapestOption =  lookupResults.stream()
                 .min(Comparator.comparingDouble(
-                        result -> Double.parseDouble(result.getPriceString().replaceAll("£","")))
+                        result -> Double.parseDouble(result.getPriceString().replaceAll("£|,","")))
                 ).orElse(LookupResult.builder().priceString("-1").description("NA").available("NA").build());
 
        return cheapestOption;

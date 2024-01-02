@@ -1050,8 +1050,8 @@ public class Trident implements Callable<Map<Integer, LookupResult>> {
 
         }catch (Exception e){
             System.out.println("Trident exception during the search field ::::::"+ productName +":" +strength+ ":" +e.getMessage());
-            e.printStackTrace();
-            Thread.sleep(1000);
+            //e.printStackTrace();
+           // Thread.sleep(1000);
         }
 
 
@@ -1064,6 +1064,12 @@ public class Trident implements Callable<Map<Integer, LookupResult>> {
         List<LookupResult> lookupResultList = Collections.synchronizedList(new ArrayList<>());
 
         List<WebElement> numberOfLis = driver.findElements(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[1]/div[2]/div[2]/span"));
+        if(numberOfLis.size() == 20){
+            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[1]/div[2]/div[3]/div[4]/div[1]/center[1]/button[1]")).sendKeys(Keys.RETURN);
+            numberOfLis = driver.findElements(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[3]/span"));
+        }
+
+
         for(int i=1; i<=numberOfLis.size();i++){
             try{
                 String descriptionFromWebsite = driver.findElement(By.xpath("html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[1]/div[2]/div[2]/span["+i+"]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/span[1]/p[1]/a[1]")).getText();

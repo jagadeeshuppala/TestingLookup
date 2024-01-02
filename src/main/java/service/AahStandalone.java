@@ -85,11 +85,7 @@ public class AahStandalone{
 
 
 
-        Product.builder().productName("hydrocortisone 1% cream").strength("1.0%").packsize("30g").productNameUnmodified("hydrocortisone 1% cream").build(),
-        Product.builder().productName("hydrocortisone 1% cream").strength("1.0%").packsize("15g").productNameUnmodified("hydrocortisone 1% cream").build(),
-                Product.builder().productName("hydroxocobalamin inj cobalin al9.5os").strength("1mg").packsize("5").productNameUnmodified("hydroxocobalamin inj cobalin al9.5os").build(),
-                Product.builder().productName("hydroxyzine tab").strength("25mg").packsize("28").productNameUnmodified("hydroxyzine tab").build(),
-                Product.builder().productName("rosuvastatin tabs").strength("5mg").packsize("28").productNameUnmodified("rosuvastatin tabs").build()
+        Product.builder().productName("ramipril").strength("5mg").packsize("").productNameUnmodified("ramipril").build()
 
 
         );
@@ -1260,6 +1256,9 @@ public class AahStandalone{
                 strengthToBeGivenInSearchField = matcher.group(1);
             }
         }
+        if(productName.contains("prednisolone tab") && strength.equals("1mg")){
+            strengthToBeGivenInSearchField = "1mg";
+        }
 
 
         driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).clear();
@@ -1277,6 +1276,10 @@ public class AahStandalone{
         List<LookupResult> lookupResultList = Collections.synchronizedList(new ArrayList<>());
 
         List<WebElement> numberOfLis = driver.findElements(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[3]/span"));
+        if(numberOfLis.size() == 20){
+            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[4]/div[4]/div[1]/center[1]/button[1]")).sendKeys(Keys.RETURN);
+            numberOfLis = driver.findElements(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[3]/span"));
+        }
         for(int i=1; i<=numberOfLis.size();i++){
             try{
 

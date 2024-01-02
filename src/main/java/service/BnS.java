@@ -159,13 +159,13 @@ public class BnS implements Callable<Map<Integer, LookupResult>> {
         if(product.getProductName().contains("estriol crm with applicator 80g")){
             product.setProductName("estriol crm 80g");
         }else if(product.getProductName().contains("ferrous fumarate tabs (un-lic)")){
-            product.setProductName("ferrous fumarate tabs");
+            product.setProductName("ferrous fumarate");
         }else if(product.getProductName().contains("metformin sr generic")){
             product.setProductName("metformin sr");
         }else if(product.getProductName().contains("perindopril glen,tev,sand")){
             product.setProductName("perindopril");
         }else if(product.getProductName().contains("salbutamol inhaler (salamol) ivax")){
-            product.setProductName("salbutamol inhaler");
+            product.setProductName("salbutamol");
         }/*else if(product.getProductName().contains("tamsulosin mr caps")){
             product.setProductName("tamsulosin caps");
         }*/else if(product.getProductName().contains("vipidia tabs alogliptin")){

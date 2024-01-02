@@ -1228,19 +1228,6 @@ public class Aah implements Callable<Map<Integer, LookupResult>>{
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     private List<LookupResult> lookupResults(WebDriver driver, String productName, String strength) throws InterruptedException {
         String prodNameToBeGivenInSearchField = productName.length()>5 ? productName.substring(0,5): productName;
         String strengthToBeGivenInSearchField = null;
@@ -1251,7 +1238,6 @@ public class Aah implements Callable<Map<Integer, LookupResult>>{
                 strengthToBeGivenInSearchField = matcher.group(1);
             }
         }
-
 
         driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).clear();
         if(strength!=null && !strength.equals("")){
@@ -1268,6 +1254,11 @@ public class Aah implements Callable<Map<Integer, LookupResult>>{
         List<LookupResult> lookupResultList = Collections.synchronizedList(new ArrayList<>());
 
         List<WebElement> numberOfLis = driver.findElements(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[3]/span"));
+        if(numberOfLis.size() == 20){
+            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[4]/div[4]/div[1]/center[1]/button[1]")).sendKeys(Keys.RETURN);
+            numberOfLis = driver.findElements(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[3]/span"));
+        }
+
         for(int i=1; i<=numberOfLis.size();i++){
             try{
 
@@ -1280,8 +1271,8 @@ public class Aah implements Callable<Map<Integer, LookupResult>>{
 
             }catch (Exception e){
                 System.out.println("AAH exception is::::::"+ productName +":" +strength+ ":" +e.getMessage());
-                e.printStackTrace();
-                Thread.sleep(1000);
+                //e.printStackTrace();
+                //Thread.sleep(1000);
             }
         }
 
