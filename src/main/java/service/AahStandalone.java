@@ -82,10 +82,14 @@ public class AahStandalone{
         }*/
 
         List<Product> productNames = Arrays.asList(
-
-
-
-        Product.builder().productName("ramipril").strength("5mg").packsize("").productNameUnmodified("ramipril").build()
+//doxazosin tabs	2mg	  28
+//levothyroxine tabs	25mcg	  28
+//paracetamol caplets	500mg	  100
+          //      prednisolone tab	1mg
+        //Product.builder().productName("doxazosin tabs").strength("2mg").packsize("28").productNameUnmodified("doxazosin tabs").build(),
+        //Product.builder().productName("levothyroxine tabs").strength("25mcg").packsize("28").productNameUnmodified("levothyroxine tabs").build(),
+        Product.builder().productName("paracetamol caplets").strength("500mg").packsize("100").productNameUnmodified("paracetamol caplets").build()
+        //Product.builder().productName("prednisolone tab").strength("1mg").packsize("28").productNameUnmodified("prednisolone tab").build()
 
 
         );
@@ -1271,7 +1275,7 @@ public class AahStandalone{
         //Thread.sleep(3000);
         driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]"))
                 .sendKeys( Keys.RETURN);
-        Thread.sleep(6000);
+        Thread.sleep(5000);
 
         List<LookupResult> lookupResultList = Collections.synchronizedList(new ArrayList<>());
 

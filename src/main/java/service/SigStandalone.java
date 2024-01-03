@@ -80,8 +80,8 @@ public class SigStandalone {
 
        List<Product> productNames = Arrays.asList(// Strength: PackSize:
 
-
-               Product.builder().productName("memantine soln sf").strength("10mg/ml").packsize("50ml").productNameUnmodified("celluvisc eye drops (carmellose)").build()
+//ferrous fumarate tabs (un-lic)	210mg	  84
+               Product.builder().productName("ferrous fumarate tabs (un-lic)").strength("210mg").packsize("84").productNameUnmodified("ferrous fumarate tabs (un-lic)").build()
 
 
         );

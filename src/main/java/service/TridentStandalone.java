@@ -87,7 +87,8 @@ public class TridentStandalone {
             }
         }*/
         List<Product> productNames = Arrays.asList(
-                Product.builder().productName("memantine soln sf").strength("10mg/ml").packsize("50").productNameUnmodified("memantine soln sf").build()
+                //losartan tabs	12.5mg	  28
+                Product.builder().productName("losartan tabs").strength("12.5mg").packsize("28").productNameUnmodified("losartan tabs").build()
         );
 
 
