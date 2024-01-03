@@ -1,6 +1,7 @@
 package service;
 
 import model.LookupResult;
+import model.LookupResultOptions;
 import model.Product;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.poi.ss.usermodel.CellType;
@@ -23,10 +24,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class Sig implements Callable<Map<Integer, LookupResult>> {
+public class Sig implements Callable<Map<Integer, LookupResultOptions>> {
 
     String fileName;
-    Map<Integer, LookupResult> concurrentHashMap = new ConcurrentHashMap<>();
+    Map<Integer, LookupResultOptions> concurrentHashMap = new ConcurrentHashMap<>();
 
     public Sig(String fileName){
         this.fileName = fileName;
@@ -39,7 +40,7 @@ public class Sig implements Callable<Map<Integer, LookupResult>> {
 
 
     @Override
-    public Map<Integer, LookupResult> call() throws Exception {
+    public Map<Integer, LookupResultOptions> call() throws Exception {
 
 
         WebDriverManager.chromedriver().setup();;
@@ -346,7 +347,7 @@ public class Sig implements Callable<Map<Integer, LookupResult>> {
         }else if(product.getProductName().contains("cetraben emollient cr agcy yes")){
             product.setProductName("cetraben emollient cr");
         }else if(product.getProductName().contains("circadin tab")){
-            product.setProductName("circadin tab");
+            product.setProductName("circadin pr tab");
         }else if(product.getProductName().contains("co-amoxiclav s/f susp") && product.getStrength().equals("125mg")){
             product.setProductName("co-amoxiclav s/f syrup");
             product.setStrength("125mg/31mg");

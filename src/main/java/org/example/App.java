@@ -1,6 +1,7 @@
 package org.example;
 
 import model.LookupResult;
+import model.LookupResultOptions;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
@@ -12,81 +13,54 @@ import service.Sig;
 import service.Trident;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * Hello world!
  *
  */
-public class App 
-{
-    public static void main( String[] args ) throws ExecutionException, InterruptedException, IOException {
-
+public class App {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
 
 
         long startTime = System.currentTimeMillis();
-        int bnsResultsColNumber = 30;
-        int bnsProductNameColNumber = 34;
-        int sigmaResultsColNumber = 31;
-        int sigmaProductNameColNumber = 35;
-        int tridentResultsColNumber = 32;
-        int tridentProductNameColNumber = 36;
-        int aahResultsColNumber = 33;
-        int aahProductNameColNumber = 37;
+        int bnsResultsColNumber = 6;
+        int sigmaResultsColNumber = 8;
+        int tridentResultsColNumber = 10;
+        int aahResultsColNumber = 12;
 
 
-        //String originalFileName = "/Users/juppala/Downloads/TestingLookup/src/main/resources/myownspreadsheet.xlsx";
-        String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\newSpreadSheet.xlsx";
-        //String copiedFileName = "/Users/juppala/Downloads/TestingLookup/src/main/resources/myownspreadsheetCopy.xlsx";
-        String date = LocalDateTime.now().getDayOfMonth()+"_"+LocalDateTime.now().getMonthValue()+"_"+LocalDateTime.now().getYear();
-        String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\newSpreadSheet_copy_"+ date +".xlsx";
+        String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\newSpreadSheet_1.xlsx";
+        String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
+        String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\newSpreadSheet_copy_" + date + ".xlsx";
 
         File original = new File(originalFileName);
         File copied = new File(copiedFileName);
         FileUtils.copyFile(original, copied);
 
-        /*BnS bns = new BnS(copiedFileName);
-        Sig sigma = new Sig(copiedFileName);
-        Trident trident = new Trident(copiedFileName);
-        Aah aah = new Aah(copiedFileName);
 
-        Thread bnsThread = new Thread(bns);
-        Thread sigmaThread = new Thread(sigma);
-        Thread tridentThread = new Thread(trident);
-        Thread aahThread = new Thread(aah);
-
-        tridentThread.start();
-        aahThread.start();
-        bnsThread.start();
-        sigmaThread.start();
-
-
-        tridentThread.join();
-        aahThread.join();
-        bnsThread.join();
-        sigmaThread.join();
-*/
         ExecutorService executor = Executors.newFixedThreadPool(4);
-        Future<Map<Integer, LookupResult>> bnsFuture = executor.submit(new BnS(copiedFileName));
-        Future<Map<Integer, LookupResult>> sigmaFuture = executor.submit(new Sig(copiedFileName));
-        Future<Map<Integer, LookupResult>> tridentFuture = executor.submit(new Trident(copiedFileName));
-        Future<Map<Integer, LookupResult>> aahFuture = executor.submit(new Aah(copiedFileName));
-
+        Future<Map<Integer, LookupResultOptions>> bnsFuture = executor.submit(new BnS(copiedFileName));
+        Future<Map<Integer, LookupResultOptions>> sigmaFuture = executor.submit(new Sig(copiedFileName));
+        Future<Map<Integer, LookupResultOptions>> tridentFuture = executor.submit(new Trident(copiedFileName));
+        Future<Map<Integer, LookupResultOptions>> aahFuture = executor.submit(new Aah(copiedFileName));
 
 
         executor.shutdown();
         while (!executor.isTerminated()) {
         }
-        System.out.println("Finished all threads");
+        System.out.println("Finished fetching rates from all the websites");
 
 
-        Map<Integer, LookupResult> bnsResults = bnsFuture.get();
-        Map<Integer, LookupResult> sigmaResults = sigmaFuture.get();
-        Map<Integer, LookupResult> tridentResults = tridentFuture.get();
-        Map<Integer, LookupResult> aahResults = aahFuture.get();
-
+        Map<Integer, LookupResultOptions> bnsResults = bnsFuture.get();
+        Map<Integer, LookupResultOptions> sigmaResults = sigmaFuture.get();
+        Map<Integer, LookupResultOptions> tridentResults = tridentFuture.get();
+        Map<Integer, LookupResultOptions> aahResults = aahFuture.get();
 
 
         FileInputStream file = new FileInputStream(copiedFileName);
@@ -112,83 +86,35 @@ public class App
         orangeCellStyle.setFont(orangeFontWithBold);
 
         for (Integer rowNumber : aahResults.keySet()) {
-            LookupResult bnsLookupResult = bnsResults.get(rowNumber);
-            LookupResult sigmaLookupResult = sigmaResults.get(rowNumber);
-            LookupResult tridentLookupResult = tridentResults.get(rowNumber);
-            LookupResult aahLookupResult = aahResults.get(rowNumber);
+            LookupResultOptions bnsLookupResult = bnsResults.get(rowNumber);
+            LookupResultOptions sigmaLookupResult = sigmaResults.get(rowNumber);
+            LookupResultOptions tridentLookupResult = tridentResults.get(rowNumber);
+            LookupResultOptions aahLookupResult = aahResults.get(rowNumber);
+
+            BigDecimal bnsPrice = new BigDecimal(!bnsLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?bnsLookupResult.getCheapestAvailableOption().getPriceString():bnsLookupResult.getCheapestOption().getPriceString());
+            BigDecimal sigmaPrice = new BigDecimal(!sigmaLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?sigmaLookupResult.getCheapestAvailableOption().getPriceString():sigmaLookupResult.getCheapestOption().getPriceString());
+            BigDecimal tridentPrice = new BigDecimal(!tridentLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?tridentLookupResult.getCheapestAvailableOption().getPriceString():tridentLookupResult.getCheapestOption().getPriceString());
+            BigDecimal aahPrice = new BigDecimal(!aahLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?aahLookupResult.getCheapestAvailableOption().getPriceString():aahLookupResult.getCheapestOption().getPriceString());
+
+
+
+            List<BigDecimal> pricesList = Arrays.asList(bnsPrice, sigmaPrice, tridentPrice, aahPrice)
+                    .stream()
+                    .filter(v -> !v.equals(new BigDecimal("-1")))
+                    .collect(Collectors.toList());
+            BigDecimal cheapestOfAll = new BigDecimal("-1");
+            if(!pricesList.isEmpty()){
+                cheapestOfAll = Collections.min(pricesList, Comparator.comparing(v -> v));
+            }
+
+
+
 
             Row row = sheet.getRow(rowNumber);
-            populatePriceAndDesc(bnsLookupResult, bnsResultsColNumber, bnsProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, row);
-            populatePriceAndDesc(sigmaLookupResult, sigmaResultsColNumber, sigmaProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, row);
-            populatePriceAndDesc(tridentLookupResult, tridentResultsColNumber, tridentProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, row);
-            populatePriceAndDesc(aahLookupResult, aahResultsColNumber, aahProductNameColNumber, redFontWithBold, greenFontWithBold, orangeFontWithBold, row);
-
-
-            /*Row row = sheet.getRow(rowNumber);
-            Cell bnsPriceCell = row.createCell(bnsResultsColNumber);
-            Cell bnsProductNameCell = row.createCell(bnsProductNameColNumber);
-            if(bnsLookupResult.getAvailable().equals("NA") ){
-                bnsPriceCell.setCellStyle(orangeCellStyle);
-                bnsPriceCell.setCellValue("NS");
-            }else if(bnsLookupResult.getAvailable().equals("available") ){
-                bnsPriceCell.setCellStyle(greenCellStyle);
-                bnsPriceCell.setCellValue(String.valueOf(bnsPrice));
-                bnsProductNameCell.setCellValue(bnsLookupResult.getDescription());
-            }else{
-                bnsPriceCell.setCellStyle(redCellStyle);
-                bnsPriceCell.setCellValue(String.valueOf(bnsPrice));
-                bnsProductNameCell.setCellValue(bnsLookupResult.getDescription());
-            }
-
-
-            Cell sigmaPriceCell = row.createCell(sigmaResultsColNumber);
-            Cell sigmaProductNameCell = row.createCell(sigmaProductNameColNumber);
-            if(sigmaLookupResult.getAvailable().equals("NA")){
-                sigmaPriceCell.setCellStyle(orangeCellStyle);
-                sigmaPriceCell.setCellValue("NS");
-            } else if(sigmaLookupResult.getAvailable().equals("available") ){
-                sigmaPriceCell.setCellStyle(greenCellStyle);
-                sigmaPriceCell.setCellValue(String.valueOf(sigmaPrice));
-                sigmaProductNameCell.setCellValue(sigmaLookupResult.getDescription());
-            }else{
-                sigmaPriceCell.setCellStyle(redCellStyle);
-                sigmaPriceCell.setCellValue(String.valueOf(sigmaPrice));
-                sigmaProductNameCell.setCellValue(sigmaLookupResult.getDescription());
-            }
-
-
-            Cell tridentPriceCell = row.createCell(tridentResultsColNumber);
-            Cell tridentProductNameCell = row.createCell(tridentProductNameColNumber);
-            if(tridentLookupResult.getAvailable().equals("NA")){
-                tridentPriceCell.setCellStyle(orangeCellStyle);
-                tridentPriceCell.setCellValue("NS");
-            } else if(tridentLookupResult.getAvailable().equals("In stock") ){
-                tridentPriceCell.setCellStyle(greenCellStyle);
-                tridentPriceCell.setCellValue(String.valueOf(tridentPrice));
-                tridentProductNameCell.setCellValue(tridentLookupResult.getDescription());
-            }else{
-                tridentPriceCell.setCellStyle(redCellStyle);
-                tridentPriceCell.setCellValue(String.valueOf(tridentPrice));
-                tridentProductNameCell.setCellValue(tridentLookupResult.getDescription());
-            }
-
-
-            Cell aahPriceCell = row.createCell(aahResultsColNumber);
-            Cell aahProductNameCell = row.createCell(aahProductNameColNumber);
-            if(aahLookupResult.getAvailable().equals("NA")){
-                aahPriceCell.setCellStyle(orangeCellStyle);
-                aahPriceCell.setCellValue("NS");
-            } else if(aahLookupResult.getAvailable().equals("In stock") ){
-                aahPriceCell.setCellStyle(greenCellStyle);
-                aahPriceCell.setCellValue(String.valueOf(aahPrice));
-                aahProductNameCell.setCellValue(aahLookupResult.getDescription());
-            }else{
-                aahPriceCell.setCellStyle(redCellStyle);
-                aahPriceCell.setCellValue(String.valueOf(aahPrice));
-                aahProductNameCell.setCellValue(aahLookupResult.getDescription());
-            }*/
-
-
+            populatePriceAndDesc(bnsLookupResult, bnsResultsColNumber,  redFontWithBold, greenFontWithBold, orangeFontWithBold, row, workbook, sheet, cheapestOfAll.toPlainString());
+            populatePriceAndDesc(sigmaLookupResult, sigmaResultsColNumber,  redFontWithBold, greenFontWithBold, orangeFontWithBold, row, workbook, sheet, cheapestOfAll.toPlainString());
+            populatePriceAndDesc(tridentLookupResult, tridentResultsColNumber,  redFontWithBold, greenFontWithBold, orangeFontWithBold, row, workbook, sheet, cheapestOfAll.toPlainString());
+            populatePriceAndDesc(aahLookupResult, aahResultsColNumber,  redFontWithBold, greenFontWithBold, orangeFontWithBold, row, workbook, sheet, cheapestOfAll.toPlainString());
 
         }
 
@@ -198,39 +124,106 @@ public class App
         outputStream.close();
 
         long endTime = System.currentTimeMillis();
-        System.out.println("Total time taken "+ (endTime-startTime)/1000 + " seconds");
-
-
-
-
+        System.out.println("Total time taken " + ((endTime - startTime) / 1000)/60 + " minutes");
 
 
     }
 
 
+    private static void populatePriceAndDesc(LookupResultOptions lookupResultOptions, int resultsColumnNumber, Font redFontWithBold, Font greenFontWithBold, Font orangeFontWithBold,
+                                             Row row, Workbook workbook, Sheet sheet, String cheapestPrice) {
 
-    private static void populatePriceAndDesc(LookupResult lookupResult, int resultsColumnNumber, int productNameColumnNumber, Font redFontWithBold, Font greenFontWithBold, Font orangeFontWithBold, Row row) {
         Cell priceCell = row.createCell(resultsColumnNumber);
-        Cell productNameCell = row.createCell(productNameColumnNumber);
-        if(lookupResult!=null){
-            if(lookupResult.getPriceString().equals("-1")){
-                XSSFRichTextString priceString = new XSSFRichTextString("NS");
-                priceString.applyFont(0, "NS".length(), orangeFontWithBold);
-                priceCell.setCellValue(priceString );
-                productNameCell.setCellValue(lookupResult.getDescription());
-            }else if(lookupResult.getAvailable().equals("available") || lookupResult.getAvailable().equals("low stock")  || lookupResult.getAvailable().equals("In stock")){
-                XSSFRichTextString priceString = new XSSFRichTextString(lookupResult.getPriceString());
-                priceString.applyFont(0, lookupResult.getPriceString().length(), greenFontWithBold);
-                priceCell.setCellValue(priceString );
-                productNameCell.setCellValue(lookupResult.getDescription());
-            }else{
-                // its not available
-                XSSFRichTextString priceString = new XSSFRichTextString(lookupResult.getPriceString());
-                priceString.applyFont(0, lookupResult.getPriceString().length(), redFontWithBold);
-                priceCell.setCellValue(priceString );
-                productNameCell.setCellValue(lookupResult.getDescription());
+        if (lookupResultOptions != null) {
+            LookupResult cheapestAvailableOption = lookupResultOptions.getCheapestAvailableOption();
+            LookupResult cheapestOption = lookupResultOptions.getCheapestOption();
+
+            String priceString  = null;
+            String priceDescription = null;
+            String comparingPriceString = null;
+
+            // set up background color
+            CellStyle lightYellowCellStyle = workbook.createCellStyle();
+            lightYellowCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+            lightYellowCellStyle.setFillPattern(FillPatternType.ALT_BARS);
+
+
+
+
+            if (cheapestOption.getPriceString().equals("-1")) {
+                priceString = "NS";
+                priceDescription = "NA";
+                comparingPriceString = "-1";
+                XSSFRichTextString priceStringRichText = new XSSFRichTextString(priceString);
+                priceStringRichText.applyFont(0, priceString.length(), orangeFontWithBold);
+                priceCell.setCellValue(priceStringRichText);
+                addComment(workbook, sheet, row.getRowNum(), priceDescription, priceCell);
+            } else if (cheapestAvailableOption.getPriceString().equals(cheapestOption.getPriceString())) {
+                // Cheapest option is available
+                priceString = cheapestAvailableOption.getPriceString();
+                priceDescription = cheapestAvailableOption.getDescription();
+                comparingPriceString = cheapestAvailableOption.getPriceString();
+
+
+
+                XSSFRichTextString priceStringRichText = new XSSFRichTextString(priceString);
+                priceStringRichText.applyFont(0, cheapestAvailableOption.getPriceString().length(), greenFontWithBold);
+                priceCell.setCellValue(priceStringRichText);
+                if(comparingPriceString.equals(cheapestPrice)){
+                    priceCell.setCellStyle(lightYellowCellStyle);
+                }
+                addComment(workbook, sheet, row.getRowNum(), priceDescription, priceCell);
+            } else if (cheapestAvailableOption.getPriceString().equals("-1")) {
+                // there is no cheapest available
+                priceString = cheapestOption.getPriceString();
+                priceDescription = cheapestOption.getDescription();
+                comparingPriceString = cheapestOption.getPriceString();
+
+                XSSFRichTextString priceStringRichText = new XSSFRichTextString(priceString);
+                priceStringRichText.applyFont(0, cheapestOption.getPriceString().length(), redFontWithBold);
+                priceCell.setCellValue(priceStringRichText);
+                if(comparingPriceString.equals(cheapestPrice)){
+                    priceCell.setCellStyle(lightYellowCellStyle);
+                }
+                addComment(workbook, sheet, row.getRowNum(), priceDescription, priceCell);
+            } else {
+                // there is a mixture of available and cheapest options
+                priceString = cheapestOption.getPriceString() + " " + cheapestAvailableOption.getPriceString();
+                priceDescription = cheapestOption.getDescription() + "\r\n" + cheapestAvailableOption.getDescription();
+                comparingPriceString = cheapestAvailableOption.getPriceString();
+
+
+                XSSFRichTextString priceStringRichText = new XSSFRichTextString(priceString);
+                priceStringRichText.applyFont(0, cheapestOption.getPriceString().length(), redFontWithBold);
+                priceStringRichText.applyFont(cheapestOption.getPriceString().length(), (cheapestOption.getPriceString() + " " + cheapestAvailableOption.getPriceString()).length(), greenFontWithBold);
+                priceCell.setCellValue(priceStringRichText);
+                if(comparingPriceString.equals(cheapestPrice)){
+                    priceCell.setCellStyle(lightYellowCellStyle);
+                }
+                addComment(workbook, sheet, row.getRowNum(), priceDescription, priceCell);
             }
         }
 
+    }
+
+    public static void addComment(Workbook workbook, Sheet sheet, int rowIdx, String commentText, Cell cell) {
+        CreationHelper factory = workbook.getCreationHelper();
+
+        ClientAnchor anchor = factory.createClientAnchor();
+        //i found it useful to show the comment box at the bottom right corner
+        anchor.setCol1(cell.getColumnIndex() + 1); //the box of the comment starts at this given column...
+        anchor.setCol2(cell.getColumnIndex() + 3); //...and ends at that given column
+        anchor.setRow1(rowIdx + 1); //one row below the cell...
+        anchor.setRow2(rowIdx + 5); //...and 4 rows high
+
+        Drawing drawing = sheet.createDrawingPatriarch();
+        Comment comment = drawing.createCellComment(anchor);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime dateTime = LocalDateTime.now();
+        String formattedDateTime = dateTime.format(formatter);
+        comment.setString(factory.createRichTextString(commentText+"\r\n"+formattedDateTime));
+
+        cell.setCellComment(comment);
     }
 }

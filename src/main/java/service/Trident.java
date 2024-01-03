@@ -1,6 +1,7 @@
 package service;
 
 import model.LookupResult;
+import model.LookupResultOptions;
 import model.Product;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.poi.ss.usermodel.CellType;
@@ -23,10 +24,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class Trident implements Callable<Map<Integer, LookupResult>> {
+public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
 
     String fileName;
-    Map<Integer, LookupResult> concurrentHashMap = new ConcurrentHashMap<>();
+    Map<Integer, LookupResultOptions> concurrentHashMap = new ConcurrentHashMap<>();
 
     public Trident(String fileName){
         this.fileName = fileName;
@@ -39,7 +40,7 @@ public class Trident implements Callable<Map<Integer, LookupResult>> {
 
 
     @Override
-    public Map<Integer, LookupResult> call() throws Exception {
+    public Map<Integer, LookupResultOptions> call() throws Exception {
 
 
         WebDriverManager.chromedriver().setup();
@@ -324,7 +325,7 @@ public class Trident implements Callable<Map<Integer, LookupResult>> {
         }else if(product.getProductName().contains("ciloxan (ciprofloxacin) eye drops")){
             product.setProductName("ciloxan eye drops");
         }else if(product.getProductName().contains("circadin tab is rx generic? (cheaper)")){
-            product.setProductName("circadin tab");
+            product.setProductName("circadin pr tab");
         }else if(product.getProductName().contains("co-amilofruse ls tabs")){
             product.setProductName("co-amilofruse tabs");
         }else if(product.getProductName().contains("co-careldopa") && product.getStrength().equals("10/100")){

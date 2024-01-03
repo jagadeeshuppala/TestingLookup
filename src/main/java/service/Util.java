@@ -1,6 +1,7 @@
 package service;
 
 import model.LookupResult;
+import model.LookupResultOptions;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -319,16 +320,29 @@ public class Util {
         return strengthWithUnits;
     }
 
-    public static LookupResult getCheapestOption(List<LookupResult> lookupResults){
-        if(lookupResults==null){
-            return LookupResult.builder().priceString("-1").description("NA").available("NA").build();
+    public static LookupResultOptions getCheapestOption(List<LookupResult> lookupResults){
+        if(lookupResults.isEmpty()){
+            return LookupResultOptions.builder()
+                    .cheapestOption(LookupResult.builder().priceString("-1").description("NA").available("NA").build())
+                    .cheapestAvailableOption(LookupResult.builder().priceString("-1").description("NA").available("NA").build())
+                    .build();
         }
         LookupResult cheapestOption =  lookupResults.stream()
                 .min(Comparator.comparingDouble(
                         result -> Double.parseDouble(result.getPriceString().replaceAll("£|,","")))
                 ).orElse(LookupResult.builder().priceString("-1").description("NA").available("NA").build());
 
-       return cheapestOption;
+        LookupResult cheapestAvailableOption =  lookupResults.stream()
+                .filter(lookupResult -> lookupResult.getAvailable().equals("available") || lookupResult.getAvailable().equals("low stock")  || lookupResult.getAvailable().equals("In stock"))
+                .min(Comparator.comparingDouble(
+                        result -> Double.parseDouble(result.getPriceString().replaceAll("£|,","")))
+                ).orElse(LookupResult.builder().priceString("-1").description("NA").available("NA").build());
+
+
+       return LookupResultOptions.builder()
+               .cheapestAvailableOption(cheapestAvailableOption)
+               .cheapestOption(cheapestOption)
+               .build();
     }
 }
 
