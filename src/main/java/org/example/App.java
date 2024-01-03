@@ -29,10 +29,10 @@ public class App {
 
 
         long startTime = System.currentTimeMillis();
-        int bnsResultsColNumber = 6;
-        int sigmaResultsColNumber = 8;
-        int tridentResultsColNumber = 10;
-        int aahResultsColNumber = 12;
+        int bnsResultsColNumber = 15;
+        int sigmaResultsColNumber = 16;
+        int tridentResultsColNumber = 17;
+        int aahResultsColNumber = 14;
 
 
         String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\newSpreadSheet_1.xlsx";
