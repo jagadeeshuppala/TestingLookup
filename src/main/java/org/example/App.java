@@ -91,10 +91,18 @@ public class App {
             LookupResultOptions tridentLookupResult = tridentResults.get(rowNumber);
             LookupResultOptions aahLookupResult = aahResults.get(rowNumber);
 
-            BigDecimal bnsPrice = new BigDecimal(!bnsLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?bnsLookupResult.getCheapestAvailableOption().getPriceString():bnsLookupResult.getCheapestOption().getPriceString());
+
+
+            /*BigDecimal bnsPrice = new BigDecimal(!bnsLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?bnsLookupResult.getCheapestAvailableOption().getPriceString():bnsLookupResult.getCheapestOption().getPriceString());
             BigDecimal sigmaPrice = new BigDecimal(!sigmaLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?sigmaLookupResult.getCheapestAvailableOption().getPriceString():sigmaLookupResult.getCheapestOption().getPriceString());
             BigDecimal tridentPrice = new BigDecimal(!tridentLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?tridentLookupResult.getCheapestAvailableOption().getPriceString():tridentLookupResult.getCheapestOption().getPriceString());
             BigDecimal aahPrice = new BigDecimal(!aahLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?aahLookupResult.getCheapestAvailableOption().getPriceString():aahLookupResult.getCheapestOption().getPriceString());
+*/
+
+            BigDecimal bnsPrice = new BigDecimal(bnsLookupResult.getCheapestAvailableOption().getPriceString());
+            BigDecimal sigmaPrice = new BigDecimal(sigmaLookupResult.getCheapestAvailableOption().getPriceString());
+            BigDecimal tridentPrice = new BigDecimal(tridentLookupResult.getCheapestAvailableOption().getPriceString());
+            BigDecimal aahPrice = new BigDecimal(aahLookupResult.getCheapestAvailableOption().getPriceString());
 
 
 
@@ -188,14 +196,17 @@ public class App {
                 addComment(workbook, sheet, row.getRowNum(), priceDescription, priceCell);
             } else {
                 // there is a mixture of available and cheapest options
-                priceString = cheapestOption.getPriceString() + " " + cheapestAvailableOption.getPriceString();
-                priceDescription = cheapestOption.getDescription() + "\r\n" + cheapestAvailableOption.getDescription();
+                priceString = cheapestAvailableOption.getPriceString() + " " + cheapestOption.getPriceString();
+                priceDescription = cheapestAvailableOption.getDescription() + "\r\n" + cheapestOption.getDescription();
                 comparingPriceString = cheapestAvailableOption.getPriceString();
 
 
                 XSSFRichTextString priceStringRichText = new XSSFRichTextString(priceString);
-                priceStringRichText.applyFont(0, cheapestOption.getPriceString().length(), redFontWithBold);
-                priceStringRichText.applyFont(cheapestOption.getPriceString().length(), (cheapestOption.getPriceString() + " " + cheapestAvailableOption.getPriceString()).length(), greenFontWithBold);
+                priceStringRichText.applyFont(0,cheapestAvailableOption.getPriceString().length(), greenFontWithBold);
+                priceStringRichText.applyFont(cheapestAvailableOption.getPriceString().length(), (cheapestAvailableOption.getPriceString() + " " + cheapestOption.getPriceString()).length(), redFontWithBold);
+
+                /*priceStringRichText.applyFont(0, cheapestOption.getPriceString().length(), redFontWithBold);
+                priceStringRichText.applyFont(cheapestOption.getPriceString().length(), (cheapestOption.getPriceString() + " " + cheapestAvailableOption.getPriceString()).length(), greenFontWithBold);*/
                 priceCell.setCellValue(priceStringRichText);
                 if(comparingPriceString.equals(cheapestPrice)){
                     priceCell.setCellStyle(lightYellowCellStyle);
