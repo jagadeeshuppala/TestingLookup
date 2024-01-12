@@ -35,9 +35,9 @@ public class App {
         int aahResultsColNumber = 14;
 
 
-        String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\newSpreadSheet_1.xlsx";
+        String originalFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/JagOrderList.xlsx";
         String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
-        String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\newSpreadSheet_copy_" + date + ".xlsx";
+        String copiedFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/JagOrderList_copy_" + date + ".xlsx";
 
         File original = new File(originalFileName);
         File copied = new File(copiedFileName);
@@ -45,10 +45,10 @@ public class App {
 
 
         ExecutorService executor = Executors.newFixedThreadPool(4);
-        Future<Map<Integer, LookupResultOptions>> bnsFuture = executor.submit(new BnS(copiedFileName));
-        Future<Map<Integer, LookupResultOptions>> sigmaFuture = executor.submit(new Sig(copiedFileName));
-        Future<Map<Integer, LookupResultOptions>> tridentFuture = executor.submit(new Trident(copiedFileName));
-        Future<Map<Integer, LookupResultOptions>> aahFuture = executor.submit(new Aah(copiedFileName));
+        Future<Map<Integer, LookupResultOptions>> bnsFuture = executor.submit(new BnS(originalFileName));
+        Future<Map<Integer, LookupResultOptions>> sigmaFuture = executor.submit(new Sig(originalFileName));
+        Future<Map<Integer, LookupResultOptions>> tridentFuture = executor.submit(new Trident(originalFileName));
+        Future<Map<Integer, LookupResultOptions>> aahFuture = executor.submit(new Aah(originalFileName));
 
 
         executor.shutdown();
@@ -62,6 +62,15 @@ public class App {
         Map<Integer, LookupResultOptions> tridentResults = tridentFuture.get();
         Map<Integer, LookupResultOptions> aahResults = aahFuture.get();
 
+
+        File processCheck = new File( originalFileName );
+        Boolean canWrite = processCheck.canWrite();
+        while (!canWrite){
+            Scanner input = new Scanner(System.in);
+            System.out.print("Please close the OrderList file and press enter to continue");
+            String nextLine = input.nextLine();
+            System.out.println("You entered: " + nextLine + " Now it will ");
+        }
 
         FileInputStream file = new FileInputStream(copiedFileName);
         Workbook workbook = new XSSFWorkbook(file);
@@ -91,13 +100,6 @@ public class App {
             LookupResultOptions tridentLookupResult = tridentResults.get(rowNumber);
             LookupResultOptions aahLookupResult = aahResults.get(rowNumber);
 
-
-
-            /*BigDecimal bnsPrice = new BigDecimal(!bnsLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?bnsLookupResult.getCheapestAvailableOption().getPriceString():bnsLookupResult.getCheapestOption().getPriceString());
-            BigDecimal sigmaPrice = new BigDecimal(!sigmaLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?sigmaLookupResult.getCheapestAvailableOption().getPriceString():sigmaLookupResult.getCheapestOption().getPriceString());
-            BigDecimal tridentPrice = new BigDecimal(!tridentLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?tridentLookupResult.getCheapestAvailableOption().getPriceString():tridentLookupResult.getCheapestOption().getPriceString());
-            BigDecimal aahPrice = new BigDecimal(!aahLookupResult.getCheapestAvailableOption().getPriceString().equals("-1")?aahLookupResult.getCheapestAvailableOption().getPriceString():aahLookupResult.getCheapestOption().getPriceString());
-*/
 
             BigDecimal bnsPrice = new BigDecimal(bnsLookupResult.getCheapestAvailableOption().getPriceString());
             BigDecimal sigmaPrice = new BigDecimal(sigmaLookupResult.getCheapestAvailableOption().getPriceString());
@@ -218,6 +220,10 @@ public class App {
     }
 
     public static void addComment(Workbook workbook, Sheet sheet, int rowIdx, String commentText, Cell cell) {
+        if (cell.getCellComment() != null) {
+            cell.setCellComment(null);
+            cell.removeCellComment();
+        }
         CreationHelper factory = workbook.getCreationHelper();
 
         ClientAnchor anchor = factory.createClientAnchor();
