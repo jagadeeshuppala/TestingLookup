@@ -47,10 +47,10 @@ public class App {
 
 
         ExecutorService executor = Executors.newFixedThreadPool(4);
-        Future<Map<Integer, LookupResultOptions>> bnsFuture = executor.submit(new BnS(originalFileName));
-        Future<Map<Integer, LookupResultOptions>> sigmaFuture = executor.submit(new Sig(originalFileName));
-        Future<Map<Integer, LookupResultOptions>> tridentFuture = executor.submit(new Trident(originalFileName));
-        Future<Map<Integer, LookupResultOptions>> aahFuture = executor.submit(new Aah(originalFileName));
+        Future<Map<Integer, LookupResultOptions>> bnsFuture = executor.submit(new BnS(originalFileName, false));
+        Future<Map<Integer, LookupResultOptions>> sigmaFuture = executor.submit(new Sig(originalFileName, false));
+        Future<Map<Integer, LookupResultOptions>> tridentFuture = executor.submit(new Trident(originalFileName, false));
+        Future<Map<Integer, LookupResultOptions>> aahFuture = executor.submit(new Aah(originalFileName, false));
 
 
         executor.shutdown();

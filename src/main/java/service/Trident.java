@@ -27,10 +27,12 @@ import java.util.stream.Collectors;
 public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
 
     String fileName;
+    boolean topup;
     Map<Integer, LookupResultOptions> concurrentHashMap = new ConcurrentHashMap<>();
 
-    public Trident(String fileName){
+    public Trident(String fileName, boolean topup){
         this.fileName = fileName;
+        this.topup = topup;
     }
 
    /* public Map<Integer, LookupResult> getConcurrentHashMap(){
@@ -71,19 +73,37 @@ public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
         int packSizeColumnNumber = 2;
         int quantityColumnNumber = 3;
         int notesColumnNumber = 5;
+        int fromColumnNumber = 4;
 
         List<Product> productNames = Collections.synchronizedList(new ArrayList<>());
         for (int i = 1; i <= sheet.getLastRowNum() && sheet.getRow(i) != null && sheet.getRow(i).getCell(productNameColumnNumber) != null; i++) {
-            if (sheet.getRow(i).getCell(quantityColumnNumber).getCellType() != CellType.BLANK
-                    && !sheet.getRow(i).getCell(quantityColumnNumber).toString().trim().equals("")) {
+            if(topup){
+                if (sheet.getRow(i).getCell(quantityColumnNumber).getCellType() != CellType.BLANK
+                        && !sheet.getRow(i).getCell(quantityColumnNumber).toString().trim().equals("")
+                        && sheet.getRow(i).getCell(fromColumnNumber).getCellType() == CellType.BLANK
+                ) {
 
 
-                String productName = sheet.getRow(i).getCell(productNameColumnNumber) != null ? new DataFormatter().formatCellValue(sheet.getRow(i).getCell(productNameColumnNumber)).toLowerCase() : null;
-                String strenth = sheet.getRow(i).getCell(productNameColumnNumber) != null ? new DataFormatter().formatCellValue(sheet.getRow(i).getCell(strengthColumnNumber)).toLowerCase() : null;
-                String packsize = sheet.getRow(i).getCell(productNameColumnNumber) != null ? new DataFormatter().formatCellValue(sheet.getRow(i).getCell(packSizeColumnNumber)).toLowerCase() : null;
-                productNames.add(Product.builder().productName(productName).strength(strenth).packsize(packsize).productNameUnmodified(productName).rowNumber(i).build());
+                    String productName = sheet.getRow(i).getCell(productNameColumnNumber) != null ? new DataFormatter().formatCellValue(sheet.getRow(i).getCell(productNameColumnNumber)).toLowerCase() : null;
+                    String strenth = sheet.getRow(i).getCell(productNameColumnNumber) != null ? new DataFormatter().formatCellValue(sheet.getRow(i).getCell(strengthColumnNumber)).toLowerCase() : null;
+                    String packsize = sheet.getRow(i).getCell(productNameColumnNumber) != null ? new DataFormatter().formatCellValue(sheet.getRow(i).getCell(packSizeColumnNumber)).toLowerCase() : null;
+                    productNames.add(Product.builder().productName(productName).strength(strenth).packsize(packsize).productNameUnmodified(productName).rowNumber(i).build());
 
+                }
+
+            }else{
+                if (sheet.getRow(i).getCell(quantityColumnNumber).getCellType() != CellType.BLANK
+                        && !sheet.getRow(i).getCell(quantityColumnNumber).toString().trim().equals("")) {
+
+
+                    String productName = sheet.getRow(i).getCell(productNameColumnNumber) != null ? new DataFormatter().formatCellValue(sheet.getRow(i).getCell(productNameColumnNumber)).toLowerCase() : null;
+                    String strenth = sheet.getRow(i).getCell(productNameColumnNumber) != null ? new DataFormatter().formatCellValue(sheet.getRow(i).getCell(strengthColumnNumber)).toLowerCase() : null;
+                    String packsize = sheet.getRow(i).getCell(productNameColumnNumber) != null ? new DataFormatter().formatCellValue(sheet.getRow(i).getCell(packSizeColumnNumber)).toLowerCase() : null;
+                    productNames.add(Product.builder().productName(productName).strength(strenth).packsize(packsize).productNameUnmodified(productName).rowNumber(i).build());
+
+                }
             }
+
         }
 
 
