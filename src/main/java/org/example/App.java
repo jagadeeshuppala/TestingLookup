@@ -15,6 +15,8 @@ import service.Trident;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -26,7 +28,34 @@ import java.util.stream.Collectors;
  *
  */
 public class App {
+
     public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
+
+        //String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
+        String originalFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet.xlsx";
+        String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
+        //String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
+        String copiedFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet-Copy_"+ date +".xlsx";
+        RandomAccessFile file = null;
+        FileLock fileLock = null;
+        try
+        {
+            file = new RandomAccessFile(originalFileName, "rw");
+            FileChannel fileChannel = file.getChannel();
+
+            fileLock = fileChannel.tryLock();
+            if (fileLock != null){
+                System.out.println("File is locked");
+                accessTheLockedFile(originalFileName, copiedFileName);
+            }
+        }finally{
+            if (fileLock != null){
+                fileLock.release();
+            }
+        }
+
+    }
+    public static void accessTheLockedFile(String originalFileName, String copiedFileName) throws ExecutionException, InterruptedException, IOException {
 
 
         long startTime = System.currentTimeMillis();
@@ -36,10 +65,11 @@ public class App {
         int aahResultsColNumber = 14;
 
 
-        String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
-        String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
-        String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
-        //String copiedFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList - Copy.xlsx";
+        //String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
+        //String originalFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet.xlsx";
+        //String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
+        //String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
+        //String copiedFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet-Copy_"+ date +".xlsx";
 
         File original = new File(originalFileName);
         File copied = new File(copiedFileName);
@@ -103,10 +133,10 @@ public class App {
             LookupResultOptions aahLookupResult = aahResults.get(rowNumber);
 
 
-            BigDecimal bnsPrice = new BigDecimal(bnsLookupResult.getCheapestAvailableOption()!=null ? bnsLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
-            BigDecimal sigmaPrice = new BigDecimal(sigmaLookupResult.getCheapestAvailableOption()!=null ? sigmaLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
-            BigDecimal tridentPrice = new BigDecimal(tridentLookupResult.getCheapestAvailableOption()!=null? tridentLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
-            BigDecimal aahPrice = new BigDecimal(aahLookupResult.getCheapestAvailableOption()!=null ? aahLookupResult.getCheapestAvailableOption().getPriceString(): "-1");
+            BigDecimal bnsPrice = new BigDecimal(bnsLookupResult!=null && bnsLookupResult.getCheapestAvailableOption()!=null ? bnsLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
+            BigDecimal sigmaPrice = new BigDecimal(sigmaLookupResult!=null && sigmaLookupResult.getCheapestAvailableOption()!=null ? sigmaLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
+            BigDecimal tridentPrice = new BigDecimal(tridentLookupResult!=null &&tridentLookupResult.getCheapestAvailableOption()!=null? tridentLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
+            BigDecimal aahPrice = new BigDecimal(aahLookupResult!=null && aahLookupResult.getCheapestAvailableOption()!=null ? aahLookupResult.getCheapestAvailableOption().getPriceString(): "-1");
 
 
 
