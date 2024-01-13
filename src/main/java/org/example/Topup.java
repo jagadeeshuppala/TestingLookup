@@ -53,10 +53,10 @@ public class Topup {
 
 
         ExecutorService executor = Executors.newFixedThreadPool(4);
-        Future<Map<Integer, LookupResultOptions>> bnsFuture = executor.submit(new BnS(originalFileName, false));
-        Future<Map<Integer, LookupResultOptions>> sigmaFuture = executor.submit(new Sig(originalFileName, false));
-        Future<Map<Integer, LookupResultOptions>> tridentFuture = executor.submit(new Trident(originalFileName, false));
-        Future<Map<Integer, LookupResultOptions>> aahFuture = executor.submit(new Aah(originalFileName, false));
+        Future<Map<Integer, LookupResultOptions>> bnsFuture = executor.submit(new BnS(originalFileName, true));
+        Future<Map<Integer, LookupResultOptions>> sigmaFuture = executor.submit(new Sig(originalFileName, true));
+        Future<Map<Integer, LookupResultOptions>> tridentFuture = executor.submit(new Trident(originalFileName, true));
+        Future<Map<Integer, LookupResultOptions>> aahFuture = executor.submit(new Aah(originalFileName, true));
 
 
         executor.shutdown();
