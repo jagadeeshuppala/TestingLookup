@@ -31,11 +31,11 @@ public class App {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
 
-        //String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
-        String originalFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet.xlsx";
+        String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
+        //String originalFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet.xlsx";
         String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
-        //String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
-        String copiedFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet-Copy_"+ date +".xlsx";
+        String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
+        //String copiedFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet-Copy_"+ date +".xlsx";
         RandomAccessFile file = null;
         FileLock fileLock = null;
         try
