@@ -5,6 +5,7 @@ import model.LookupResultOptions;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import service.Aah;
@@ -35,9 +36,10 @@ public class App {
         int aahResultsColNumber = 14;
 
 
-        String originalFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/JagOrderList.xlsx";
+        String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
         String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
-        String copiedFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/JagOrderList_copy_" + date + ".xlsx";
+        String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
+        //String copiedFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList - Copy.xlsx";
 
         File original = new File(originalFileName);
         File copied = new File(copiedFileName);
@@ -72,7 +74,7 @@ public class App {
             System.out.println("You entered: " + nextLine + " Now it will ");
         }
 
-        FileInputStream file = new FileInputStream(copiedFileName);
+        FileInputStream file = new FileInputStream(originalFileName);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
         CellStyle redCellStyle = workbook.createCellStyle();
@@ -101,10 +103,10 @@ public class App {
             LookupResultOptions aahLookupResult = aahResults.get(rowNumber);
 
 
-            BigDecimal bnsPrice = new BigDecimal(bnsLookupResult.getCheapestAvailableOption().getPriceString());
-            BigDecimal sigmaPrice = new BigDecimal(sigmaLookupResult.getCheapestAvailableOption().getPriceString());
-            BigDecimal tridentPrice = new BigDecimal(tridentLookupResult.getCheapestAvailableOption().getPriceString());
-            BigDecimal aahPrice = new BigDecimal(aahLookupResult.getCheapestAvailableOption().getPriceString());
+            BigDecimal bnsPrice = new BigDecimal(bnsLookupResult.getCheapestAvailableOption()!=null ? bnsLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
+            BigDecimal sigmaPrice = new BigDecimal(sigmaLookupResult.getCheapestAvailableOption()!=null ? sigmaLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
+            BigDecimal tridentPrice = new BigDecimal(tridentLookupResult.getCheapestAvailableOption()!=null? tridentLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
+            BigDecimal aahPrice = new BigDecimal(aahLookupResult.getCheapestAvailableOption()!=null ? aahLookupResult.getCheapestAvailableOption().getPriceString(): "-1");
 
 
 
@@ -128,7 +130,7 @@ public class App {
 
         }
 
-        FileOutputStream outputStream = new FileOutputStream(copiedFileName);
+        FileOutputStream outputStream = new FileOutputStream(originalFileName);
         workbook.write(outputStream);
         workbook.close();
         outputStream.close();
@@ -220,10 +222,9 @@ public class App {
     }
 
     public static void addComment(Workbook workbook, Sheet sheet, int rowIdx, String commentText, Cell cell) {
-        if (cell.getCellComment() != null) {
-            cell.setCellComment(null);
-            cell.removeCellComment();
-        }
+        cell.setCellComment(null);
+        cell.removeCellComment();
+
         CreationHelper factory = workbook.getCreationHelper();
 
         ClientAnchor anchor = factory.createClientAnchor();
@@ -233,14 +234,26 @@ public class App {
         anchor.setRow1(rowIdx + 1); //one row below the cell...
         anchor.setRow2(rowIdx + 5); //...and 4 rows high
 
-        Drawing drawing = sheet.createDrawingPatriarch();
-        Comment comment = drawing.createCellComment(anchor);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateTime = LocalDateTime.now();
-        String formattedDateTime = dateTime.format(formatter);
-        comment.setString(factory.createRichTextString(commentText+"\r\n"+formattedDateTime));
+        try{
+            /*Drawing drawing = sheet.createDrawingPatriarch();
+            Comment comment = drawing.createCellComment(anchor);*/
 
-        cell.setCellComment(comment);
+            Comment comment =  sheet.createDrawingPatriarch().createCellComment(
+                    //new XSSFClientAnchor(0, 0, 0, 0, (short) 3, 3, (short) 5, 6));
+                    new XSSFClientAnchor(0, 0, 0, 0, cell.getColumnIndex(), cell.getRowIndex(), cell.getColumnIndex()+5, cell.getRowIndex()+6));
+
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime dateTime = LocalDateTime.now();
+            String formattedDateTime = dateTime.format(formatter);
+            comment.setString(factory.createRichTextString(commentText+"\r\n"+formattedDateTime));
+
+            cell.setCellComment(comment);
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+
     }
 }
