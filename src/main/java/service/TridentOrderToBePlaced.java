@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import model.LookupResult;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
@@ -63,11 +64,38 @@ public class TridentOrderToBePlaced {
         for(int i=0;i<=sheet.getLastRowNum() ;i++){
             Cell tridentCell = sheet.getRow(i).getCell(tridentResultsColNumber);
             Cell quantityCell = sheet.getRow(i).getCell(quantityColNumber);
-            if(tridentCell != null && quantityCell!=null){
+            if(tridentCell != null && tridentCell.getCellType() != CellType.BLANK && quantityCell!=null && quantityCell.getCellType() != CellType.BLANK){
 
-                XSSFCellStyle tridentStyle = (XSSFCellStyle) tridentCell.getCellStyle();
+
+              /*  CellStyle lightYellowCellStyle = workbook.createCellStyle();
+                lightYellowCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+                lightYellowCellStyle.setFillPattern(FillPatternType.ALT_BARS);*/
+
+                CellStyle tridentStyle = tridentCell.getCellStyle();
+
+                if(tridentStyle.getFillForegroundColor() == IndexedColors.LIGHT_YELLOW.getIndex()){
+                    try{
+                        String s = tridentCell.getCellComment().getString().getString();
+                        String productToBeOrdered = s.split("\r\n")[0];
+                        String quantityToBeOrdered = new DataFormatter().formatCellValue(quantityCell);
+                        boolean addedToBasket = addToBasket(driver, productToBeOrdered, quantityToBeOrdered);
+                        if(addedToBasket){
+                            System.out.println(productToBeOrdered + " was added to basket");
+                        }else{
+                            System.out.println(productToBeOrdered + " was not added to basket");
+                        }
+                    }catch (Exception e){
+                        System.out.println("row number "+i);
+                        e.printStackTrace();
+                    }
+
+                }
+
+
+                /*XSSFCellStyle tridentStyle = (XSSFCellStyle) tridentCell.getCellStyle();
                 XSSFFont font = tridentStyle.getFont();
-                if(font.getItalic()){
+                XSSFColor foregroundColorColor = tridentStyle.getFillForegroundColorColor();
+                if(foregroundColorColor.equals(XSSFColor.toXSSFColor(C))){
                     String s = tridentCell.getCellComment().getString().getString();
                     String productToBeOrdered = s.split("\n")[0];
                     String quantityToBeOrdered = new DataFormatter().formatCellValue(quantityCell);
@@ -78,7 +106,7 @@ public class TridentOrderToBePlaced {
                         System.out.println(productToBeOrdered + " was not added to basket");
                     }
 
-                }
+                }*/
             }
 
         }
@@ -98,7 +126,7 @@ public class TridentOrderToBePlaced {
 
             driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]"))
                     .sendKeys( Keys.RETURN);
-            Thread.sleep(5000);
+            Thread.sleep(3000);
 
 
             driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[1]/div[2]/div[2]/span[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[4]/span[1]/div[1]/div[1]/div[1]/div[1]/div[1]/input[1]")).sendKeys(quantity );
