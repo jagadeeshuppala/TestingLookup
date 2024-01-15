@@ -148,6 +148,7 @@ public class BnS implements Callable<Map<Integer, LookupResultOptions>> {
 
         driver.close();
         driver.quit();
+        file.close();
 
         return concurrentHashMap;
     }

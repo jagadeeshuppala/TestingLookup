@@ -39,11 +39,11 @@ public class App {
         int aahResultsColNumber = 14;
 
 
-        String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
-        //String originalFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet.xlsx";
+        //String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
+        String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\JagOrderList.xlsx";
         String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
-        String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
-        //String copiedFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet-Copy_"+ date +".xlsx";
+        //String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
+        String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\JagOrderList-Copy_"+ date +".xlsx";
 
         File original = new File(originalFileName);
         File copied = new File(copiedFileName);
@@ -69,13 +69,13 @@ public class App {
         Map<Integer, LookupResultOptions> aahResults = aahFuture.get();
 
 
-        File processCheck = new File( originalFileName );
-        Boolean canWrite = processCheck.canWrite();
-        while (!canWrite){
+
+
+        File sameFileName = new File(originalFileName);
+        while (!original.renameTo(sameFileName)){
             Scanner input = new Scanner(System.in);
             System.out.print("Please close the OrderList file and press enter to continue");
             String nextLine = input.nextLine();
-            System.out.println("You entered: " + nextLine + " Now it will ");
         }
 
         FileInputStream file = new FileInputStream(originalFileName);

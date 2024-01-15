@@ -155,6 +155,7 @@ public class Sig implements Callable<Map<Integer, LookupResultOptions>> {
 
         driver.close();
         driver.quit();
+        file.close();
         return concurrentHashMap;
     }
 
