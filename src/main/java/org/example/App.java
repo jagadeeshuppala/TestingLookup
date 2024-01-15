@@ -31,32 +31,6 @@ public class App {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
 
-        String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
-        //String originalFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet.xlsx";
-        String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
-        String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
-        //String copiedFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet-Copy_"+ date +".xlsx";
-        RandomAccessFile file = null;
-        FileLock fileLock = null;
-        try
-        {
-            file = new RandomAccessFile(originalFileName, "rw");
-            FileChannel fileChannel = file.getChannel();
-
-            fileLock = fileChannel.tryLock();
-            if (fileLock != null){
-                System.out.println("File is locked");
-                accessTheLockedFile(originalFileName, copiedFileName);
-            }
-        }finally{
-            if (fileLock != null){
-                fileLock.release();
-            }
-        }
-
-    }
-    public static void accessTheLockedFile(String originalFileName, String copiedFileName) throws ExecutionException, InterruptedException, IOException {
-
 
         long startTime = System.currentTimeMillis();
         int bnsResultsColNumber = 15;
@@ -65,10 +39,10 @@ public class App {
         int aahResultsColNumber = 14;
 
 
-        //String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
+        String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
         //String originalFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet.xlsx";
-        //String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
-        //String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
+        String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
+        String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
         //String copiedFileName = "/Users/juppala/MyNewWorkspace/TestingLookup/src/main/resources/myownspreadsheet-Copy_"+ date +".xlsx";
 
         File original = new File(originalFileName);
