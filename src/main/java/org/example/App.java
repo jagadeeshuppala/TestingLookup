@@ -39,11 +39,11 @@ public class App {
         int aahResultsColNumber = 14;
 
 
-        //String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
-        String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\JagOrderList.xlsx";
+        String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
+        //String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\JagOrderList.xlsx";
         String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
-        //String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
-        String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\JagOrderList-Copy_"+ date +".xlsx";
+        String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
+        //String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\JagOrderList-Copy_"+ date +".xlsx";
 
         File original = new File(originalFileName);
         File copied = new File(copiedFileName);
