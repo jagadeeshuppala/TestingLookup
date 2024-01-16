@@ -71,13 +71,11 @@ public class Topup {
         Map<Integer, LookupResultOptions> aahResults = aahFuture.get();
 
 
-        File processCheck = new File( originalFileName );
-        Boolean canWrite = processCheck.canWrite();
-        while (!canWrite){
+        File sameFileName = new File(originalFileName);
+        while (!original.renameTo(sameFileName)){
             Scanner input = new Scanner(System.in);
             System.out.print("Please close the OrderList file and press enter to continue");
             String nextLine = input.nextLine();
-            System.out.println("You entered: " + nextLine + " Now it will ");
         }
 
         FileInputStream file = new FileInputStream(originalFileName);
