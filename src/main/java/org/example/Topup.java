@@ -107,10 +107,10 @@ public class Topup {
             LookupResultOptions aahLookupResult = aahResults.get(rowNumber);
 
 
-            BigDecimal bnsPrice = new BigDecimal(bnsLookupResult.getCheapestAvailableOption()!=null ? bnsLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
-            BigDecimal sigmaPrice = new BigDecimal(sigmaLookupResult.getCheapestAvailableOption()!=null ? sigmaLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
-            BigDecimal tridentPrice = new BigDecimal(tridentLookupResult.getCheapestAvailableOption()!=null? tridentLookupResult.getCheapestAvailableOption().getPriceString() : "-1");
-            BigDecimal aahPrice = new BigDecimal(aahLookupResult.getCheapestAvailableOption()!=null ? aahLookupResult.getCheapestAvailableOption().getPriceString(): "-1");
+            BigDecimal bnsPrice = new BigDecimal(bnsLookupResult.getCheapestAvailableOption()!=null ? bnsLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
+            BigDecimal sigmaPrice = new BigDecimal(sigmaLookupResult.getCheapestAvailableOption()!=null ? sigmaLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
+            BigDecimal tridentPrice = new BigDecimal(tridentLookupResult.getCheapestAvailableOption()!=null? tridentLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
+            BigDecimal aahPrice = new BigDecimal(aahLookupResult.getCheapestAvailableOption()!=null ? aahLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",",""): "-1");
 
 
 
