@@ -39,11 +39,11 @@ public class App {
         int aahResultsColNumber = 14;
 
 
-        String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
-        //String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\OrderList.xlsx";
+        //String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
+        String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\OrderList.xlsx";
         String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
-        String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
-        //String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\JagOrderList-Copy_"+ date +".xlsx";
+        //String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
+        String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\JagOrderList-Copy_"+ date +".xlsx";
 
         File original = new File(originalFileName);
         File copied = new File(copiedFileName);
@@ -107,10 +107,14 @@ public class App {
             LookupResultOptions aahLookupResult = aahResults.get(rowNumber);
 
 
-            BigDecimal bnsPrice = new BigDecimal(bnsLookupResult!=null && bnsLookupResult.getCheapestAvailableOption()!=null ? bnsLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
-            BigDecimal sigmaPrice = new BigDecimal(sigmaLookupResult!=null && sigmaLookupResult.getCheapestAvailableOption()!=null ? sigmaLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
-            BigDecimal tridentPrice = new BigDecimal(tridentLookupResult!=null &&tridentLookupResult.getCheapestAvailableOption()!=null? tridentLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
-            BigDecimal aahPrice = new BigDecimal(aahLookupResult!=null && aahLookupResult.getCheapestAvailableOption()!=null ? aahLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",",""): "-1");
+            BigDecimal bnsPrice = new BigDecimal(bnsLookupResult!=null && bnsLookupResult.getCheapestAvailableOption()!=null && bnsLookupResult.getCheapestAvailableOption().getPriceString()!=null?
+                    bnsLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
+            BigDecimal sigmaPrice = new BigDecimal(sigmaLookupResult!=null && sigmaLookupResult.getCheapestAvailableOption()!=null && sigmaLookupResult.getCheapestAvailableOption().getPriceString()!=null?
+                    sigmaLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
+            BigDecimal tridentPrice = new BigDecimal(tridentLookupResult!=null &&tridentLookupResult.getCheapestAvailableOption()!=null && tridentLookupResult.getCheapestAvailableOption().getPriceString()!=null?
+                    tridentLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
+            BigDecimal aahPrice = new BigDecimal(aahLookupResult!=null && aahLookupResult.getCheapestAvailableOption()!=null && aahLookupResult.getCheapestAvailableOption().getPriceString()!=null
+                    ? aahLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",",""): "-1");
 
 
 
@@ -251,7 +255,7 @@ public class App {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime dateTime = LocalDateTime.now();
             String formattedDateTime = dateTime.format(formatter);
-            comment.setString(factory.createRichTextString(commentText+"\r\n"+formattedDateTime));
+            comment.setString(factory.createRichTextString(commentText+" : "+formattedDateTime));
 
             cell.setCellComment(comment);
         }catch (Exception e){
