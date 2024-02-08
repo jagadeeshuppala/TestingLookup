@@ -15,6 +15,7 @@ import service.Trident;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.nio.channels.Channel;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.time.LocalDateTime;
@@ -40,7 +41,7 @@ public class App {
 
 
         String originalFileName = "\\\\11701279QSVR\\PSSharedarea\\Bridgwater\\Miscellaneous\\OrderList.xlsx";
-        //String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\OrderList.xlsx";
+        //String originalFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\JagOrderList.xlsx";
         String date = LocalDateTime.now().getDayOfMonth() + "_" + LocalDateTime.now().getMonthValue() + "_" + LocalDateTime.now().getYear();
         String copiedFileName = "C:\\Users\\msola\\OneDrive\\Desktop\\OrderListCopy-DONT DELETE\\OrderList-Copy_"+ date +".xlsx";
         //String copiedFileName = "C:\\PharmacyProjectWorkspace\\TestingLookup\\src\\main\\resources\\JagOrderList-Copy_"+ date +".xlsx";
@@ -70,9 +71,7 @@ public class App {
 
 
 
-
-        File sameFileName = new File(originalFileName);
-        while (!original.renameTo(sameFileName)){
+        while (!isFileClosed(original)){
             Scanner input = new Scanner(System.in);
             System.out.print("Please close the OrderList file and press enter to continue");
             String nextLine = input.nextLine();
@@ -263,5 +262,26 @@ public class App {
 
         }
 
+    }
+
+
+    private static boolean isFileClosed(File file) {
+        boolean closed;
+        Channel channel = null;
+        try {
+            channel = new RandomAccessFile(file, "rw").getChannel();
+            closed = true;
+        } catch(Exception ex) {
+            closed = false;
+        } finally {
+            if(channel!=null) {
+                try {
+                    channel.close();
+                } catch (IOException ex) {
+                    // exception handling
+                }
+            }
+        }
+        return closed;
     }
 }
