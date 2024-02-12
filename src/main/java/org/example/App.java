@@ -13,6 +13,10 @@ import service.BnS;
 import service.Sig;
 import service.Trident;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.channels.Channel;
@@ -30,7 +34,7 @@ import java.util.stream.Collectors;
  */
 public class App {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException, LineUnavailableException {
 
 
         long startTime = System.currentTimeMillis();
@@ -52,10 +56,10 @@ public class App {
 
 
         ExecutorService executor = Executors.newFixedThreadPool(4);
-        Future<Map<Integer, LookupResultOptions>> bnsFuture = executor.submit(new BnS(originalFileName, false));
-        Future<Map<Integer, LookupResultOptions>> sigmaFuture = executor.submit(new Sig(originalFileName, false));
-        Future<Map<Integer, LookupResultOptions>> tridentFuture = executor.submit(new Trident(originalFileName, false));
-        Future<Map<Integer, LookupResultOptions>> aahFuture = executor.submit(new Aah(originalFileName, false));
+        Future<Map<Integer, LookupResultOptions>> bnsFuture = executor.submit(new BnS(copiedFileName, false));
+        Future<Map<Integer, LookupResultOptions>> sigmaFuture = executor.submit(new Sig(copiedFileName, false));
+        Future<Map<Integer, LookupResultOptions>> tridentFuture = executor.submit(new Trident(copiedFileName, false));
+        Future<Map<Integer, LookupResultOptions>> aahFuture = executor.submit(new Aah(copiedFileName, false));
 
 
         executor.shutdown();
@@ -69,14 +73,27 @@ public class App {
         Map<Integer, LookupResultOptions> tridentResults = tridentFuture.get();
         Map<Integer, LookupResultOptions> aahResults = aahFuture.get();
 
+        writeToFile(copiedFileName, aahResults, bnsResults, sigmaResults, tridentResults, bnsResultsColNumber, sigmaResultsColNumber, tridentResultsColNumber, aahResultsColNumber);
+        makeSound();
+        Scanner input = new Scanner(System.in);
+        System.out.print("Can you please check if the order list file is open on any other clients, if yes can you please close that file and press enter to continue");
+        String nextLine = input.nextLine();
 
-
-        while (!isFileClosed(original)){
+        /*while (!isFileClosed(original)){
             Scanner input = new Scanner(System.in);
             System.out.print("Please close the OrderList file and press enter to continue");
             String nextLine = input.nextLine();
-        }
+        }*/
 
+        writeToFile(originalFileName, aahResults, bnsResults, sigmaResults, tridentResults, bnsResultsColNumber, sigmaResultsColNumber, tridentResultsColNumber, aahResultsColNumber);
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total time taken " + ((endTime - startTime) / 1000)/60 + " minutes");
+
+
+    }
+
+    private static void writeToFile(String originalFileName, Map<Integer, LookupResultOptions> aahResults, Map<Integer, LookupResultOptions> bnsResults, Map<Integer, LookupResultOptions> sigmaResults, Map<Integer, LookupResultOptions> tridentResults, int bnsResultsColNumber, int sigmaResultsColNumber, int tridentResultsColNumber, int aahResultsColNumber) throws IOException {
         FileInputStream file = new FileInputStream(originalFileName);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -141,11 +158,6 @@ public class App {
         workbook.write(outputStream);
         workbook.close();
         outputStream.close();
-
-        long endTime = System.currentTimeMillis();
-        System.out.println("Total time taken " + ((endTime - startTime) / 1000)/60 + " minutes");
-
-
     }
 
 
@@ -283,5 +295,27 @@ public class App {
             }
         }
         return closed;
+    }
+
+    public static void makeSound() throws LineUnavailableException {
+        System.out.println("Make sound");
+        byte[] buf = new byte[2];
+        int frequency = 44100; //44100 sample points per 1 second
+        AudioFormat af = new AudioFormat((float) frequency, 16, 1, true, false);
+        SourceDataLine sdl = AudioSystem.getSourceDataLine(af);
+        sdl.open();
+        sdl.start();
+        int durationMs = 5000;
+        int numberOfTimesFullSinFuncPerSec = 441; //number of times in 1sec sin function repeats
+        for (int i = 0; i < durationMs * (float) 44100 / 1000; i++) { //1000 ms in 1 second
+            float numberOfSamplesToRepresentFullSin= (float) frequency / numberOfTimesFullSinFuncPerSec;
+            double angle = i / (numberOfSamplesToRepresentFullSin/ 2.0) * Math.PI;  // /divide with 2 since sin goes 0PI to 2PI
+            short a = (short) (Math.sin(angle) * 32767);  //32767 - max value for sample to take (-32767 to 32767)
+            buf[0] = (byte) (a & 0xFF); //write 8bits ________WWWWWWWW out of 16
+            buf[1] = (byte) (a >> 8); //write 8bits WWWWWWWW________ out of 16
+            sdl.write(buf, 0, 2);
+        }
+        sdl.drain();
+        sdl.stop();
     }
 }
