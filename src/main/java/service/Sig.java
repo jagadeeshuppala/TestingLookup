@@ -50,7 +50,7 @@ public class Sig implements Callable<Map<Integer, LookupResultOptions>> {
         driver.get("https://www.sigconnect.co.uk/login");
 
         driver.findElement(By.id("loginform-username")).sendKeys("bridgwater.pharmacy@nhs.net");
-        driver.findElement(By.id("loginform-password")).sendKeys("Br@8486");
+        driver.findElement(By.id("loginform-password")).sendKeys("Bridg@8486");
         driver.findElement(By.id("login_btn"))
                 .sendKeys(Keys.RETURN);
 

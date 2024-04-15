@@ -53,7 +53,7 @@ public class BnS implements Callable<Map<Integer, LookupResultOptions>> {
         Thread.sleep(1000);
 
         driver.findElement(By.id("userName")).sendKeys("bridgwater.pharmacy@nhs.net");
-        driver.findElement(By.id("pass")).sendKeys("84868486");
+        driver.findElement(By.id("pass")).sendKeys("Bridg@8486");
         driver.findElement(By.xpath("/html[1]/body[1]/main[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/form[1]/div[4]/button[1]"))
                 .sendKeys(Keys.RETURN);
 
@@ -1703,13 +1703,13 @@ public class BnS implements Callable<Map<Integer, LookupResultOptions>> {
                 strengthToBeGivenInSearchField = matcher.group(1);
             }
         }
+///html[1]/body[1]/article[1]/div[1]/div[1]/form[1]/div[1]/div[1]/input[1]
 
-
-        driver.findElement(By.xpath("/html[1]/body[1]/div[3]/div[2]/div[1]/div[1]/input[1]")).clear();
+        driver.findElement(By.xpath("/html[1]/body[1]/strong[1]/div[2]/div[2]/div[1]/div[1]/input[1]")).clear();
         if(strength!=null && !strength.equals("")){
-            driver.findElement(By.xpath("/html[1]/body[1]/div[3]/div[2]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField + " "+ strengthToBeGivenInSearchField);
+            driver.findElement(By.xpath("/html[1]/body[1]/strong[1]/div[2]/div[2]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField + " "+ strengthToBeGivenInSearchField);
         }else{
-            driver.findElement(By.xpath("/html[1]/body[1]/div[3]/div[2]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField );
+            driver.findElement(By.xpath("/html[1]/body[1]/strong[1]/div[2]/div[2]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField );
         }
 
         Thread.sleep(2000);
