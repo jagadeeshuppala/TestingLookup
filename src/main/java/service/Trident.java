@@ -45,7 +45,8 @@ public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
     public Map<Integer, LookupResultOptions> call() throws Exception {
 
 
-        WebDriverManager.chromedriver().setup();
+        WebDriverManager.chromedriver().clearDriverCache().setup();
+        WebDriverManager.chromedriver().clearResolutionCache().setup();
         WebDriver driver = new ChromeDriver();
         driver.get("https://www.aah.co.uk/s/signin?startURL=https%3A%2F%2Fwww.tridentonline.co.uk%2Ftrident%2Fsearchresults%3Foperation%3DquickSearch");
 

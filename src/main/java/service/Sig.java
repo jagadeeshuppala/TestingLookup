@@ -45,7 +45,8 @@ public class Sig implements Callable<Map<Integer, LookupResultOptions>> {
     public Map<Integer, LookupResultOptions> call() throws Exception {
 
 
-        WebDriverManager.chromedriver().setup();;
+        WebDriverManager.chromedriver().clearDriverCache().setup();
+        WebDriverManager.chromedriver().clearResolutionCache().setup();
         WebDriver driver = new ChromeDriver();
         driver.get("https://www.sigconnect.co.uk/login");
 

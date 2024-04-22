@@ -46,7 +46,8 @@ public class BnS implements Callable<Map<Integer, LookupResultOptions>> {
 
     @Override
     public Map<Integer, LookupResultOptions> call() throws Exception {
-        WebDriverManager.chromedriver().setup();
+        WebDriverManager.chromedriver().clearDriverCache().setup();
+        WebDriverManager.chromedriver().clearResolutionCache().setup();
         WebDriver driver = new ChromeDriver();
         driver.get("https://www.bnsgroup.co.uk/login.do");
 
