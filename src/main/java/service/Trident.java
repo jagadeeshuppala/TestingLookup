@@ -50,6 +50,8 @@ public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
         WebDriver driver = new ChromeDriver();
         driver.get("https://www.aah.co.uk/s/signin?startURL=https%3A%2F%2Fwww.tridentonline.co.uk%2Ftrident%2Fsearchresults%3Foperation%3DquickSearch");
 
+
+
         Thread.sleep(5000);
 
         driver.findElement(By.id("onetrust-reject-all-handler")).click();
@@ -63,6 +65,8 @@ public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
         driver.findElement(By.xpath("/html[1]/body[1]/div[3]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/article[1]/div[2]/div[2]/div[2]/button[1]"))
                 .sendKeys(Keys.RETURN);
         Thread.sleep(20000);
+
+
 
 
 
@@ -109,7 +113,10 @@ public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
 
 
 
-        for(Product product : productNames){
+        //for(Product product : productNames){
+        for(int i=0;i<productNames.size();i++){
+            System.out.println("Trident Still "+ (productNames.size() - i)+" more to go");
+            Product product = productNames.get(i);
             System.out.println("Trident Product:"+product.getProductName()+" Strength:"+product.getStrength() + " PackSize:"+ product.getPacksize());
             overrideProductBeforeEvenSearch(product);
 
@@ -1064,11 +1071,13 @@ public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
             }
         }
         try{
-            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).clear();
+            //driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).clear();
             if(strength!=null && !strength.equals("")){
-                driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField + " "+ strengthToBeGivenInSearchField);
+                //driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField + " "+ strengthToBeGivenInSearchField);
+                driver.get("https://www.tridentonline.co.uk/trident/searchresults?operation=quickSearch&searchText="+prodNameToBeGivenInSearchField + " "+ strengthToBeGivenInSearchField);
             }else{
-                driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField );
+                //driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField );
+                driver.get("https://www.tridentonline.co.uk/trident/searchresults?operation=quickSearch&searchText="+prodNameToBeGivenInSearchField);
             }
 
         }catch (Exception e){
@@ -1079,10 +1088,11 @@ public class Trident implements Callable<Map<Integer, LookupResultOptions>> {
 
 
 
+
         //Thread.sleep(3000);
-        driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]"))
-                .sendKeys( Keys.RETURN);
-        Thread.sleep(5000);
+        /*driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]"))
+                .sendKeys( Keys.RETURN);*/
+        Thread.sleep(4000);
 
         List<LookupResult> lookupResultList = Collections.synchronizedList(new ArrayList<>());
 

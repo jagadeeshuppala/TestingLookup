@@ -99,7 +99,10 @@ public class Sig implements Callable<Map<Integer, LookupResultOptions>> {
 
         }
 
-        for(Product product : productNames){
+        //for(Product product : productNames){
+        for(int i=0;i<productNames.size();i++){
+            System.out.println("Sigma Still "+ (productNames.size() - i)+" more to go");
+            Product product = productNames.get(i);
             System.out.println("Sigma Product:"+product.getProductName()+" Strength:"+product.getStrength() + " PackSize:"+ product.getPacksize());
             overrideProductBeforeEvenSearch(product);
 

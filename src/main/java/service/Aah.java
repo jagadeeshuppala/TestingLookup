@@ -105,7 +105,10 @@ public class Aah implements Callable<Map<Integer, LookupResultOptions>>{
 
 
 
-        for(Product product : productNames){
+        //for(Product product : productNames){
+        for(int i=0;i<productNames.size();i++){
+            System.out.println("AAH Still "+ (productNames.size() - i)+" more to go");
+            Product product = productNames.get(i);
             System.out.println("AAH Product:"+product.getProductName()+" Strength:"+product.getStrength() + " PackSize:"+ product.getPacksize());
             overrideProductBeforeEvenSearch(product);
 
@@ -1259,18 +1262,30 @@ public class Aah implements Callable<Map<Integer, LookupResultOptions>>{
                 strengthToBeGivenInSearchField = matcher.group(1);
             }
         }
+       /* try{
+            driver.findElement(By.id("userName")).clear();
+            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).clear();
 
-        driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).clear();
+        }catch (Exception e){
+            System.out.println("AAH clear is giving some exception, so waiting for 5 seconds and will search again");
+            Thread.sleep(5000);
+            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]"));
+
+        }*/
         if(strength!=null && !strength.equals("")){
-            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField + " "+ strengthToBeGivenInSearchField);
+            //driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField + " "+ strengthToBeGivenInSearchField);
+            //driver.findElement(By.id("input-51")).sendKeys(prodNameToBeGivenInSearchField + " "+ strengthToBeGivenInSearchField);
+            driver.get("https://www.aah.co.uk/aahpoint/searchresults?operation=quickSearch&searchText="+prodNameToBeGivenInSearchField + " "+ strengthToBeGivenInSearchField);
         }else{
-            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField );
+            //driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]")).sendKeys(prodNameToBeGivenInSearchField );
+            //driver.findElement(By.id("input-51")).sendKeys(prodNameToBeGivenInSearchField );
+            driver.get("https://www.aah.co.uk/aahpoint/searchresults?operation=quickSearch&searchText="+prodNameToBeGivenInSearchField);
         }
 
         //Thread.sleep(3000);
-        driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]"))
-                .sendKeys( Keys.RETURN);
-        Thread.sleep(5000);
+        /*driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]"))
+                .sendKeys( Keys.RETURN);*/
+        Thread.sleep(4000);
 
         List<LookupResult> lookupResultList = Collections.synchronizedList(new ArrayList<>());
 

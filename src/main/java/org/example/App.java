@@ -93,7 +93,96 @@ public class App {
 
     }
 
+    public static Set<Integer> max(Map<Integer, LookupResultOptions> aahResults, Map<Integer, LookupResultOptions> bnsResults, Map<Integer, LookupResultOptions> sigmaResults, Map<Integer, LookupResultOptions> tridentResults) {
+
+        int max = aahResults.size();
+        Set<Integer> maxKeySet = aahResults.keySet();
+
+        if (bnsResults.size() > max){
+            max = bnsResults.size();
+            maxKeySet= bnsResults.keySet();
+        }else if (sigmaResults.size() > max){
+            max = sigmaResults.size();
+            maxKeySet= sigmaResults.keySet();
+        }else if(tridentResults.size() > max){
+            max = tridentResults.size();
+            maxKeySet= tridentResults.keySet();
+        }
+
+
+        return maxKeySet;
+    }
+
     private static void writeToFile(String originalFileName, Map<Integer, LookupResultOptions> aahResults, Map<Integer, LookupResultOptions> bnsResults, Map<Integer, LookupResultOptions> sigmaResults, Map<Integer, LookupResultOptions> tridentResults, int bnsResultsColNumber, int sigmaResultsColNumber, int tridentResultsColNumber, int aahResultsColNumber) throws IOException {
+        FileInputStream file = new FileInputStream(originalFileName);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        CellStyle redCellStyle = workbook.createCellStyle();
+        CellStyle greenCellStyle = workbook.createCellStyle();
+        CellStyle orangeCellStyle = workbook.createCellStyle();
+
+        Font redFontWithBold = workbook.createFont();
+        redFontWithBold.setColor(HSSFColor.HSSFColorPredefined.RED.getIndex());
+        redFontWithBold.setBold(true);
+        redCellStyle.setFont(redFontWithBold);
+
+        Font greenFontWithBold = workbook.createFont();
+        greenFontWithBold.setColor(HSSFColor.HSSFColorPredefined.GREEN.getIndex());
+        greenFontWithBold.setBold(true);
+        greenCellStyle.setFont(greenFontWithBold);
+
+        Font orangeFontWithBold = workbook.createFont();
+        orangeFontWithBold.setColor(HSSFColor.HSSFColorPredefined.ORANGE.getIndex());
+        orangeFontWithBold.setBold(true);
+        orangeCellStyle.setFont(orangeFontWithBold);
+
+
+        for (Integer rowNumber : max(aahResults,bnsResults,sigmaResults, tridentResults)) {
+            LookupResultOptions bnsLookupResult = bnsResults.get(rowNumber);
+            LookupResultOptions sigmaLookupResult = sigmaResults.get(rowNumber);
+            LookupResultOptions tridentLookupResult = tridentResults.get(rowNumber);
+            LookupResultOptions aahLookupResult = aahResults.get(rowNumber);
+
+
+            BigDecimal bnsPrice = new BigDecimal(bnsLookupResult!=null && bnsLookupResult.getCheapestAvailableOption()!=null && bnsLookupResult.getCheapestAvailableOption().getPriceString()!=null?
+                    bnsLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
+            BigDecimal sigmaPrice = new BigDecimal(sigmaLookupResult!=null && sigmaLookupResult.getCheapestAvailableOption()!=null && sigmaLookupResult.getCheapestAvailableOption().getPriceString()!=null?
+                    sigmaLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
+            BigDecimal tridentPrice = new BigDecimal(tridentLookupResult!=null &&tridentLookupResult.getCheapestAvailableOption()!=null && tridentLookupResult.getCheapestAvailableOption().getPriceString()!=null?
+                    tridentLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",","") : "-1");
+            BigDecimal aahPrice = new BigDecimal(aahLookupResult!=null && aahLookupResult.getCheapestAvailableOption()!=null && aahLookupResult.getCheapestAvailableOption().getPriceString()!=null
+                    ? aahLookupResult.getCheapestAvailableOption().getPriceString().replaceAll(",",""): "-1");
+
+
+
+            List<BigDecimal> pricesList = Arrays.asList(bnsPrice, sigmaPrice, tridentPrice, aahPrice)
+                    .stream()
+                    .filter(v -> !v.equals(new BigDecimal("-1")))
+                    .collect(Collectors.toList());
+            BigDecimal cheapestOfAll = new BigDecimal("-1");
+            if(!pricesList.isEmpty()){
+                cheapestOfAll = Collections.min(pricesList, Comparator.comparing(v -> v));
+            }
+
+
+
+
+            Row row = sheet.getRow(rowNumber);
+            populatePriceAndDesc(bnsLookupResult, bnsResultsColNumber,  redFontWithBold, greenFontWithBold, orangeFontWithBold, row, workbook, sheet, cheapestOfAll.toPlainString());
+            populatePriceAndDesc(sigmaLookupResult, sigmaResultsColNumber,  redFontWithBold, greenFontWithBold, orangeFontWithBold, row, workbook, sheet, cheapestOfAll.toPlainString());
+            populatePriceAndDesc(tridentLookupResult, tridentResultsColNumber,  redFontWithBold, greenFontWithBold, orangeFontWithBold, row, workbook, sheet, cheapestOfAll.toPlainString());
+            populatePriceAndDesc(aahLookupResult, aahResultsColNumber,  redFontWithBold, greenFontWithBold, orangeFontWithBold, row, workbook, sheet, cheapestOfAll.toPlainString());
+
+        }
+        System.out.println("prices writing to file "+ originalFileName);
+        FileOutputStream outputStream = new FileOutputStream(originalFileName);
+        workbook.write(outputStream);
+        workbook.close();
+        outputStream.close();
+    }
+
+    //The below is commented out as we dont want to comapare the prices now
+    /*private static void writeToFile(String originalFileName, Map<Integer, LookupResultOptions> aahResults, Map<Integer, LookupResultOptions> bnsResults, Map<Integer, LookupResultOptions> sigmaResults, Map<Integer, LookupResultOptions> tridentResults, int bnsResultsColNumber, int sigmaResultsColNumber, int tridentResultsColNumber, int aahResultsColNumber) throws IOException {
         FileInputStream file = new FileInputStream(originalFileName);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -158,7 +247,7 @@ public class App {
         workbook.write(outputStream);
         workbook.close();
         outputStream.close();
-    }
+    }*/
 
 
     private static void populatePriceAndDesc(LookupResultOptions lookupResultOptions, int resultsColumnNumber, Font redFontWithBold, Font greenFontWithBold, Font orangeFontWithBold,
