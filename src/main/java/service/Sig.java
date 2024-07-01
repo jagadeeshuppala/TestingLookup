@@ -72,7 +72,8 @@ public class Sig implements Callable<Map<Integer, LookupResultOptions>> {
         List<Product> productNames = Collections.synchronizedList(new ArrayList<>());
         for (int i = 1; i <= sheet.getLastRowNum() && sheet.getRow(i) != null && sheet.getRow(i).getCell(productNameColumnNumber) != null; i++) {
             if(topup){
-                if (sheet.getRow(i).getCell(quantityColumnNumber).getCellType() != CellType.BLANK
+                if (sheet.getRow(i) !=null && sheet.getRow(i).getCell(quantityColumnNumber)!=null && sheet.getRow(i).getCell(quantityColumnNumber).getCellType()!=null
+                        && sheet.getRow(i).getCell(quantityColumnNumber).getCellType() != CellType.BLANK
                         && !sheet.getRow(i).getCell(quantityColumnNumber).toString().trim().equals("")
                         && sheet.getRow(i).getCell(fromColumnNumber).getCellType() == CellType.BLANK
                 ) {
@@ -85,7 +86,8 @@ public class Sig implements Callable<Map<Integer, LookupResultOptions>> {
                 }
 
             }else{
-                if (sheet.getRow(i).getCell(quantityColumnNumber).getCellType() != CellType.BLANK
+                if (sheet.getRow(i) !=null && sheet.getRow(i).getCell(quantityColumnNumber)!=null && sheet.getRow(i).getCell(quantityColumnNumber).getCellType()!=null
+                        && sheet.getRow(i).getCell(quantityColumnNumber).getCellType() != CellType.BLANK
                         && !sheet.getRow(i).getCell(quantityColumnNumber).toString().trim().equals("")
                 ) {
 
