@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import model.LookupResult;
 import model.LookupResultOptions;
 import model.Product;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -65,6 +66,7 @@ public class Aah implements Callable<Map<Integer, LookupResultOptions>>{
         Thread.sleep(20000);
 
         FileInputStream file = new FileInputStream(fileName);
+        ZipSecureFile.setMaxFileCount(5000);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
         int productNameColumnNumber = 0;

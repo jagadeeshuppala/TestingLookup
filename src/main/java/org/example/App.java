@@ -76,7 +76,7 @@ public class App {
         writeToFile(copiedFileName, aahResults, bnsResults, sigmaResults, tridentResults, bnsResultsColNumber, sigmaResultsColNumber, tridentResultsColNumber, aahResultsColNumber);
         makeSound();
         Scanner input = new Scanner(System.in);
-        System.out.print("Can you please check if the order list file is open on any other clients, if yes can you please close that file and press enter to continue");
+        System.out.print("Can you please check if the order list file is open on any other clients, if yes can you please save and close that file and press enter to continue");
         String nextLine = input.nextLine();
 
         /*while (!isFileClosed(original)){
