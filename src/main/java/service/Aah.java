@@ -82,6 +82,7 @@ public class Aah implements Callable<Map<Integer, LookupResultOptions>>{
                 if (sheet.getRow(i) !=null && sheet.getRow(i).getCell(quantityColumnNumber)!=null && sheet.getRow(i).getCell(quantityColumnNumber).getCellType()!=null
                         && sheet.getRow(i).getCell(quantityColumnNumber).getCellType() != CellType.BLANK
                         && !sheet.getRow(i).getCell(quantityColumnNumber).toString().trim().equals("")
+                        && sheet.getRow(i).getCell(fromColumnNumber) !=null
                         && sheet.getRow(i).getCell(fromColumnNumber).getCellType() == CellType.BLANK
                 ) {
 
