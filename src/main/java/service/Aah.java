@@ -1290,23 +1290,22 @@ public class Aah implements Callable<Map<Integer, LookupResultOptions>>{
         //Thread.sleep(3000);
         /*driver.findElement(By.xpath("/html[1]/body[1]/div[1]/header[1]/div[1]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/span[1]/lightning-input[1]/lightning-primitive-input-simple[1]/div[1]/div[1]/input[1]"))
                 .sendKeys( Keys.RETURN);*/
-        Thread.sleep(4000);
+        Thread.sleep(3000);
 
         List<LookupResult> lookupResultList = Collections.synchronizedList(new ArrayList<>());
 
-        List<WebElement> numberOfLis = driver.findElements(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[3]/span"));
+        List<WebElement> numberOfLis = driver.findElements(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[6]/div[2]/div[3]/span"));
         if(numberOfLis.size() == 20){
-            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[4]/div[4]/div[1]/center[1]/button[1]")).sendKeys(Keys.RETURN);
-            numberOfLis = driver.findElements(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[3]/span"));
+            driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[6]/div[2]/div[4]/div[4]/div[1]/center[1]/button[1]")).sendKeys(Keys.RETURN);
+            numberOfLis = driver.findElements(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[6]/div[2]/div[3]/span"));
         }
 
         for(int i=1; i<=numberOfLis.size();i++){
             try{
-
-                String descriptionFromWebsite = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[3]/span["+i+"]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/span[1]/p[1]")).getText();
-                String packsizeFromWebsite = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[3]/span["+i+"]/div[1]/div[1]/div[1]/div[2]/div[1]/div[2]/span[1]")).getText();
-                String availabilityFromWebsite = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[3]/span["+i+"]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]")).getText();
-                String priceFromWebsite = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[4]/div[2]/div[3]/span["+i+"]/div[1]/div[1]/div[1]/div[2]/div[1]/div[4]/div[1]/span[1]")).getText();
+                String descriptionFromWebsite = driver.findElement(By.xpath("html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[6]/div[2]/div[3]/span["+i+"]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/span[1]/p[1]")).getText();
+                String packsizeFromWebsite = driver.findElement(By.xpath("html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[6]/div[2]/div[3]/span["+i+"]/div[1]/div[1]/div[1]/div[2]/div[1]/div[2]/span[1]")).getText();
+                String availabilityFromWebsite = driver.findElement(By.xpath("html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[6]/div[2]/div[3]/span["+i+"]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]")).getText();
+                String priceFromWebsite = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/span[1]/div[1]/div[1]/div[2]/div[6]/div[2]/div[3]/span["+i+"]/div[1]/div[1]/div[1]/div[2]/div[1]/div[4]/div[1]/span[1]")).getText();
                 priceFromWebsite = priceFromWebsite.replaceAll("£","");
                 lookupResultList.add(LookupResult.builder().description((descriptionFromWebsite+ " "+ packsizeFromWebsite).toLowerCase()).priceString(priceFromWebsite.toLowerCase()).available(availabilityFromWebsite).build());
 
